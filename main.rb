@@ -129,17 +129,17 @@ def draw
   (0...@map.length).each do |y|
     (0...@map[y].length).each do |x|
       if @map[y][x] == TILE[:FLUX]
-        g.fillStyle = "#ccffcc"
+        g.fill_style = "#ccffcc"
       elsif @map[y][x] == TILE[:UNBREAKABLE]
-        g.fillStyle = "#999999"
+        g.fill_style = "#999999"
       elsif @map[y][x] == TILE[:STONE] || @map[y][x] == TILE[:FALLING_STONE]
-        g.fillStyle = "#0000cc"
+        g.fill_style = "#0000cc"
       elsif @map[y][x] == TILE[:BOX] || @map[y][x] == TILE[:FALLING_BOX]
-        g.fillStyle = "#8b4513"
+        g.fill_style = "#8b4513"
       elsif @map[y][x] == TILE[:KEY1] || @map[y][x] == TILE[:LOCK1]
-        g.fillStyle = "#ffcc00"
+        g.fill_style = "#ffcc00"
       elsif @map[y][x] == TILE[:KEY2] || @map[y][x] == TILE[:LOCK2]
-        g.fillStyle = "#00ccff"
+        g.fill_style = "#00ccff"
       end
 
       if @map[y][x] != TILE[:AIR] && @map[y][x] != TILE[:PLAYER]
@@ -149,7 +149,7 @@ def draw
   end
 
   # Draw player
-  g.fillStyle = "#ff0000"
+  g.fill_style = "#ff0000"
   g.fill_rect(@playerx * TILE_SIZE, @playery * TILE_SIZE, TILE_SIZE, TILE_SIZE)
 end
 
@@ -185,10 +185,10 @@ end
 
 # Hacks to make the ruby2d API look/act similar to the JS canvas/context/graphics API
 class GraphicsObject
-  attr_accessor :fillStyle
+  attr_accessor :fill_style
 
   def initialize
-    @fillStyle = ""
+    @fill_style = ""
   end
 
   def clear_rect(x, y, width, height)
@@ -197,7 +197,7 @@ class GraphicsObject
   end
 
   def fill_rect(x, y, width, height)
-    Rectangle.new(x: x, y: y, width: width, height: height, color: @fillStyle)
+    Rectangle.new(x: x, y: y, width: width, height: height, color: @fill_style)
   end
 end
 
