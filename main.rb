@@ -47,42 +47,42 @@ def remove(tile)
   end
 end
 
-def moveToTile(newx, newy)
+def move_to_tile(newx, newy)
   @map[@playery][@playerx] = TILE[:AIR]
   @map[newy][newx] = TILE[:PLAYER]
   @playerx = newx
   @playery = newy
 end
 
-def moveHorizontal(dx)
+def move_horizontal(dx)
   if @map[@playery][@playerx + dx] == TILE[:FLUX] ||
      @map[@playery][@playerx + dx] == TILE[:AIR]
-    moveToTile(@playerx + dx, @playery)
+    move_to_tile(@playerx + dx, @playery)
   elsif (@map[@playery][@playerx + dx] == TILE[:STONE] ||
     @map[@playery][@playerx + dx] == TILE[:BOX]) &&
         @map[@playery][@playerx + dx + dx] == TILE[:AIR] &&
         @map[@playery + 1][@playerx + dx] != TILE[:AIR]
     @map[@playery][@playerx + dx + dx] = @map[@playery][@playerx + dx]
-    moveToTile(@playerx + dx, @playery)
+    move_to_tile(@playerx + dx, @playery)
   elsif @map[@playery][@playerx + dx] == TILE[:KEY1]
     remove(TILE[:LOCK1])
-    moveToTile(@playerx + dx, @playery)
+    move_to_tile(@playerx + dx, @playery)
   elsif @map[@playery][@playerx + dx] == TILE[:KEY2]
     remove(TILE[:LOCK2])
-    moveToTile(@playerx + dx, @playery)
+    move_to_tile(@playerx + dx, @playery)
   end
 end
 
-def moveVertical(dy)
+def move_vertical(dy)
   if @map[@playery + dy][@playerx] == TILE[:FLUX] ||
      @map[@playery + dy][@playerx] == TILE[:AIR]
-    moveToTile(@playerx, @playery + dy)
+    move_to_tile(@playerx, @playery + dy)
   elsif @map[@playery + dy][@playerx] == TILE[:KEY1]
     remove(TILE[:LOCK1])
-    moveToTile(@playerx, @playery + dy)
+    move_to_tile(@playerx, @playery + dy)
   elsif @map[@playery + dy][@playerx] == TILE[:KEY2]
     remove(TILE[:LOCK2])
-    moveToTile(@playerx, @playery + dy)
+    move_to_tile(@playerx, @playery + dy)
   end
 end
 
@@ -90,13 +90,13 @@ def update_game
   until @inputs.empty?
     current = @inputs.pop
     if current == INPUT[:LEFT]
-      moveHorizontal(-1)
+      move_horizontal(-1)
     elsif current == INPUT[:RIGHT]
-      moveHorizontal(1)
+      move_horizontal(1)
     elsif current == INPUT[:UP]
-      moveVertical(-1)
+      move_vertical(-1)
     elsif current == INPUT[:DOWN]
-      moveVertical(1)
+      move_vertical(1)
     end
   end
 
@@ -120,10 +120,10 @@ def update_game
 end
 
 def draw
-  canvas = @document.getElementById("GameCanvas")
-  g = canvas.getContext("2d")
+  canvas = @document.get_element_by_id("GameCanvas")
+  g = canvas.get_context("2d")
 
-  g.clearRect(0, 0, canvas.width, canvas.height)
+  g.clear_rect(0, 0, canvas.width, canvas.height)
 
   # Draw map
   (0...@map.length).each do |y|
@@ -143,14 +143,14 @@ def draw
       end
 
       if @map[y][x] != TILE[:AIR] && @map[y][x] != TILE[:PLAYER]
-        g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
+        g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
       end
     end
   end
 
   # Draw player
   g.fillStyle = "#ff0000"
-  g.fillRect(@playerx * TILE_SIZE, @playery * TILE_SIZE, TILE_SIZE, TILE_SIZE)
+  g.fill_rect(@playerx * TILE_SIZE, @playery * TILE_SIZE, TILE_SIZE, TILE_SIZE)
 end
 
 def gameLoop
@@ -191,22 +191,22 @@ class GraphicsObject
     @fillStyle = ""
   end
 
-  def clearRect(x, y, width, height)
+  def clear_rect(x, y, width, height)
     Window.clear
     Rectangle.new(x: x, y: y, width: width, height: height, color: "white")
   end
 
-  def fillRect(x, y, width, height)
+  def fill_rect(x, y, width, height)
     Rectangle.new(x: x, y: y, width: width, height: height, color: @fillStyle)
   end
 end
 
 @document = Object.new
 
-def @document.getElementById(id)
+def @document.get_element_by_id(id)
   canvas = Object.new
 
-  def canvas.getContext(context)
+  def canvas.get_context(context)
     GraphicsObject.new
   end
 
