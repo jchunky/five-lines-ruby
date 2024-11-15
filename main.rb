@@ -1,4 +1,4 @@
-require 'ruby2d'
+require "ruby2d"
 
 TILE_SIZE = 30
 FPS = 30
@@ -9,10 +9,14 @@ TILE = {
   FLUX: 1,
   UNBREAKABLE: 2,
   PLAYER: 3,
-  STONE: 4, FALLING_STONE: 5,
-  BOX: 6, FALLING_BOX: 7,
-  KEY1: 8, LOCK1: 9,
-  KEY2: 10, LOCK2: 11
+  STONE: 4,
+  FALLING_STONE: 5,
+  BOX: 6,
+  FALLING_BOX: 7,
+  KEY1: 8,
+  LOCK1: 9,
+  KEY2: 10,
+  LOCK2: 11,
 }
 
 INPUT = {
@@ -34,8 +38,8 @@ INPUT = {
 @inputs = []
 
 def remove(tile)
-  for y in 0...@map.length
-    for x in 0...@map[y].length
+  (0...@map.length).each do |y|
+    (0...@map[y].length).each do |x|
       if @map[y][x] == tile
         @map[y][x] = TILE[:AIR]
       end
@@ -51,27 +55,27 @@ def moveToTile(newx, newy)
 end
 
 def moveHorizontal(dx)
-  if (@map[@playery][@playerx + dx] == TILE[:FLUX] ||
-    @map[@playery][@playerx + dx] == TILE[:AIR])
+  if @map[@playery][@playerx + dx] == TILE[:FLUX] ||
+     @map[@playery][@playerx + dx] == TILE[:AIR]
     moveToTile(@playerx + dx, @playery)
-  elsif ((@map[@playery][@playerx + dx] == TILE[:STONE] ||
+  elsif (@map[@playery][@playerx + dx] == TILE[:STONE] ||
     @map[@playery][@playerx + dx] == TILE[:BOX]) &&
-    @map[@playery][@playerx + dx + dx] == TILE[:AIR] &&
-    @map[@playery + 1][@playerx + dx] != TILE[:AIR])
+        @map[@playery][@playerx + dx + dx] == TILE[:AIR] &&
+        @map[@playery + 1][@playerx + dx] != TILE[:AIR]
     @map[@playery][@playerx + dx + dx] = @map[@playery][@playerx + dx]
     moveToTile(@playerx + dx, @playery)
-  elsif (@map[@playery][@playerx + dx] == TILE[:KEY1])
+  elsif @map[@playery][@playerx + dx] == TILE[:KEY1]
     remove(TILE[:LOCK1])
     moveToTile(@playerx + dx, @playery)
-  elsif (@map[@playery][@playerx + dx] == TILE[:KEY2])
+  elsif @map[@playery][@playerx + dx] == TILE[:KEY2]
     remove(TILE[:LOCK2])
     moveToTile(@playerx + dx, @playery)
   end
 end
 
 def moveVertical(dy)
-  if (@map[@playery + dy][@playerx] == TILE[:FLUX] ||
-    @map[@playery + dy][@playerx] == TILE[:AIR])
+  if @map[@playery + dy][@playerx] == TILE[:FLUX] ||
+     @map[@playery + dy][@playerx] == TILE[:AIR]
     moveToTile(@playerx, @playery + dy)
   elsif @map[@playery + dy][@playerx] == TILE[:KEY1]
     remove(TILE[:LOCK1])
@@ -83,7 +87,7 @@ def moveVertical(dy)
 end
 
 def update_game
-  while @inputs.length > 0
+  until @inputs.empty?
     current = @inputs.pop
     if current == INPUT[:LEFT]
       moveHorizontal(-1)
@@ -96,14 +100,14 @@ def update_game
     end
   end
 
-  for y in (0...@map.length).to_a.reverse
-    for x in 0...@map[y].length
-      if ((@map[y][x] == TILE[:STONE] || @map[y][x] == TILE[:FALLING_STONE]) &&
-        @map[y + 1][x] == TILE[:AIR])
+  (0...@map.length).to_a.reverse_each do |y|
+    (0...@map[y].length).each do |x|
+      if (@map[y][x] == TILE[:STONE] || @map[y][x] == TILE[:FALLING_STONE]) &&
+         @map[y + 1][x] == TILE[:AIR]
         @map[y + 1][x] = TILE[:FALLING_STONE]
         @map[y][x] = TILE[:AIR]
-      elsif ((@map[y][x] == TILE[:BOX] || @map[y][x] == TILE[:FALLING_BOX]) &&
-        @map[y + 1][x] == TILE[:AIR])
+      elsif (@map[y][x] == TILE[:BOX] || @map[y][x] == TILE[:FALLING_BOX]) &&
+            @map[y + 1][x] == TILE[:AIR]
         @map[y + 1][x] = TILE[:FALLING_BOX]
         @map[y][x] = TILE[:AIR]
       elsif @map[y][x] == TILE[:FALLING_STONE]
@@ -122,8 +126,8 @@ def draw
   g.clearRect(0, 0, canvas.width, canvas.height)
 
   # Draw map
-  for y in 0...@map.length
-    for x in 0...@map[y].length
+  (0...@map.length).each do |y|
+    (0...@map[y].length).each do |x|
       if @map[y][x] == TILE[:FLUX]
         g.fillStyle = "#ccffcc"
       elsif @map[y][x] == TILE[:UNBREAKABLE]
@@ -165,15 +169,16 @@ RIGHT_KEY = "right"
 DOWN_KEY = "down"
 
 on :key_down do |e|
-  if e.key == LEFT_KEY || e.key == "a"
+  case e.key
+  when LEFT_KEY, "a"
     @inputs.push(INPUT[:LEFT])
-  elsif e.key == UP_KEY || e.key == "w"
+  when UP_KEY, "w"
     @inputs.push(INPUT[:UP])
-  elsif e.key == RIGHT_KEY || e.key == "d"
+  when RIGHT_KEY, "d"
     @inputs.push(INPUT[:RIGHT])
-  elsif e.key == DOWN_KEY || e.key == "s"
+  when DOWN_KEY, "s"
     @inputs.push(INPUT[:DOWN])
-  elsif e.key == "escape"
+  when "escape"
     close
   end
 end
@@ -188,13 +193,12 @@ class GraphicsObject
 
   def clearRect(x, y, width, height)
     Window.clear
-    Rectangle.new(x: x, y: y, width: width, height: height, color: 'white')
+    Rectangle.new(x: x, y: y, width: width, height: height, color: "white")
   end
 
   def fillRect(x, y, width, height)
     Rectangle.new(x: x, y: y, width: width, height: height, color: @fillStyle)
   end
-
 end
 
 @document = Object.new
