@@ -69,7 +69,7 @@ class Main
   end
 
   class Air < SimpleDelegator
-    def color(g)
+    def draw(g, x, y)
     end
 
     def air? = true
@@ -87,8 +87,9 @@ class Main
   end
 
   class Flux < SimpleDelegator
-    def color(g)
+    def draw(g, x, y)
       g.fill_style = "#ccffcc"
+      g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
     end
 
     def air? = false
@@ -106,8 +107,9 @@ class Main
   end
 
   class Unbreakable < SimpleDelegator
-    def color(g)
+    def draw(g, x, y)
       g.fill_style = "#999999"
+      g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
     end
 
     def air? = false
@@ -125,7 +127,7 @@ class Main
   end
 
   class Player < SimpleDelegator
-    def color(g)
+    def draw(g, x, y)
     end
 
     def air? = false
@@ -143,8 +145,9 @@ class Main
   end
 
   class Stone < SimpleDelegator
-    def color(g)
+    def draw(g, x, y)
       g.fill_style = "#0000cc"
+      g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
     end
 
     def air? = false
@@ -162,8 +165,9 @@ class Main
   end
 
   class FallingStone < SimpleDelegator
-    def color(g)
+    def draw(g, x, y)
       g.fill_style = "#0000cc"
+      g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
     end
 
     def air? = false
@@ -181,8 +185,9 @@ class Main
   end
 
   class Box < SimpleDelegator
-    def color(g)
+    def draw(g, x, y)
       g.fill_style = "#8b4513"
+      g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
     end
 
     def air? = false
@@ -200,8 +205,9 @@ class Main
   end
 
   class FallingBox < SimpleDelegator
-    def color(g)
+    def draw(g, x, y)
       g.fill_style = "#8b4513"
+      g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
     end
 
     def air? = false
@@ -219,8 +225,9 @@ class Main
   end
 
   class Key1 < SimpleDelegator
-    def color(g)
+    def draw(g, x, y)
       g.fill_style = "#ffcc00"
+      g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
     end
 
     def air? = false
@@ -238,8 +245,9 @@ class Main
   end
 
   class Lock1 < SimpleDelegator
-    def color(g)
+    def draw(g, x, y)
       g.fill_style = "#ffcc00"
+      g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
     end
 
     def air? = false
@@ -257,8 +265,9 @@ class Main
   end
 
   class Key2 < SimpleDelegator
-    def color(g)
+    def draw(g, x, y)
       g.fill_style = "#00ccff"
+      g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
     end
 
     def air? = false
@@ -276,8 +285,9 @@ class Main
   end
 
   class Lock2 < SimpleDelegator
-    def color(g)
+    def draw(g, x, y)
       g.fill_style = "#00ccff"
+      g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
     end
 
     def air? = false
@@ -488,17 +498,13 @@ class Main
   def draw_map(g)
     (0...@map.length).each do |y|
       (0...@map[y].length).each do |x|
-        color_of_tile(g, x, y)
-
-        if !@map[y][x].air? && !@map[y][x].player?
-          g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
-        end
+        draw_tile(g, x, y)
       end
     end
   end
 
-  def color_of_tile(g, x, y)
-    @map[y][x].color(g)
+  def draw_tile(g, x, y)
+    @map[y][x].draw(g, x, y)
   end
 
   def draw_player(g)
