@@ -92,16 +92,44 @@ def update_game
   update_map
 end
 
+class Left
+  def left? = true
+  def right? = false
+  def up? = false
+  def down? = false
+end
+
+class Right
+  def left? = false
+  def right? = true
+  def up? = false
+  def down? = false
+end
+
+class Up
+  def left? = false
+  def right? = false
+  def up? = true
+  def down? = false
+end
+
+class Down
+  def left? = false
+  def right? = false
+  def up? = false
+  def down? = true
+end
+
 def handle_inputs
   until @inputs.empty?
     current = @inputs.pop
-    if current == INPUT[:LEFT]
+    if current.left?
       move_horizontal(-1)
-    elsif current == INPUT[:RIGHT]
+    elsif current.right?
       move_horizontal(1)
-    elsif current == INPUT[:UP]
+    elsif current.up?
       move_vertical(-1)
-    elsif current == INPUT[:DOWN]
+    elsif current.down?
       move_vertical(1)
     end
   end
@@ -191,13 +219,13 @@ DOWN_KEY = "down"
 on :key_down do |e|
   case e.key
   when LEFT_KEY, "a"
-    @inputs.push(INPUT[:LEFT])
+    @inputs.push(Left.new)
   when UP_KEY, "w"
-    @inputs.push(INPUT[:UP])
+    @inputs.push(Up.new)
   when RIGHT_KEY, "d"
-    @inputs.push(INPUT[:RIGHT])
+    @inputs.push(Right.new)
   when DOWN_KEY, "s"
-    @inputs.push(INPUT[:DOWN])
+    @inputs.push(Down.new)
   when "escape"
     close
   end
