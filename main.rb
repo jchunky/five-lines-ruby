@@ -200,11 +200,16 @@ module Tiles
 
   class Stone < SimpleDelegator
     include Config
+    def initialize(...)
+      super
+      @falling = false
+    end
+
     def update(x, y)
       if map[y + 1][x].air?
         map[y + 1][x] = FallingStone.new(self)
         map[y][x] = Air.new(self)
-      elsif falling_stone?
+      elsif @falling
         map[y][x] = Stone.new(self)
       end
     end
@@ -214,7 +219,7 @@ module Tiles
 
     def move_horizontal(dx)
       if map[playery][playerx + dx + dx].air? &&
-         !map[playery + 1][playerx + dx].air? && stone?
+         !map[playery + 1][playerx + dx].air? && !@falling
         map[playery][playerx + dx + dx] = map[playery][playerx + dx]
         move_to_tile(playerx + dx, playery)
       end
@@ -245,11 +250,16 @@ module Tiles
 
   class FallingStone < SimpleDelegator
     include Config
+    def initialize(...)
+      super
+      @falling = true
+    end
+
     def update(x, y)
       if map[y + 1][x].air?
         map[y + 1][x] = FallingStone.new(self)
         map[y][x] = Air.new(self)
-      elsif falling_stone?
+      elsif @falling
         map[y][x] = Stone.new(self)
       end
     end
@@ -259,7 +269,7 @@ module Tiles
 
     def move_horizontal(dx)
       if map[playery][playerx + dx + dx].air? &&
-         !map[playery + 1][playerx + dx].air? && stone?
+         !map[playery + 1][playerx + dx].air? && !@falling
         map[playery][playerx + dx + dx] = map[playery][playerx + dx]
         move_to_tile(playerx + dx, playery)
       end
@@ -290,11 +300,16 @@ module Tiles
 
   class Box < SimpleDelegator
     include Config
+    def initialize(...)
+      super
+      @falling = false
+    end
+
     def update(x, y)
       if map[y + 1][x].air?
         map[y + 1][x] = FallingBox.new(self)
         map[y][x] = Air.new(self)
-      elsif falling_box?
+      elsif @falling
         map[y][x] = Box.new(self)
       end
     end
@@ -304,7 +319,7 @@ module Tiles
 
     def move_horizontal(dx)
       if map[playery][playerx + dx + dx].air? &&
-         !map[playery + 1][playerx + dx].air? && box?
+         !map[playery + 1][playerx + dx].air? && !@falling
         map[playery][playerx + dx + dx] = map[playery][playerx + dx]
         move_to_tile(playerx + dx, playery)
       end
@@ -335,11 +350,16 @@ module Tiles
 
   class FallingBox < SimpleDelegator
     include Config
+    def initialize(...)
+      super
+      @falling = true
+    end
+
     def update(x, y)
       if map[y + 1][x].air?
         map[y + 1][x] = FallingBox.new(self)
         map[y][x] = Air.new(self)
-      elsif falling_box?
+      elsif @falling
         map[y][x] = Box.new(self)
       end
     end
@@ -349,7 +369,7 @@ module Tiles
 
     def move_horizontal(dx)
       if map[playery][playerx + dx + dx].air? &&
-         !map[playery + 1][playerx + dx].air? && box?
+         !map[playery + 1][playerx + dx].air? && !@falling
         map[playery][playerx + dx + dx] = map[playery][playerx + dx]
         move_to_tile(playerx + dx, playery)
       end
