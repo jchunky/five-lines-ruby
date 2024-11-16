@@ -659,13 +659,9 @@ class Main
   def update_map
     (0...@map.length).to_a.reverse_each do |y|
       (0...@map[y].length).each do |x|
-        update_tile(x, y)
+        map[y][x].update(x, y)
       end
     end
-  end
-
-  def update_tile(x, y)
-    map[y][x].update(x, y)
   end
 
   def draw
