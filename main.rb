@@ -68,6 +68,186 @@ class Main
     end
   end
 
+  class Air < SimpleDelegator
+    def air? = true
+    def flux? = false
+    def unbreakable? = false
+    def player? = false
+    def stone? = false
+    def falling_stone? = false
+    def box? = false
+    def falling_box? = false
+    def key1? = false
+    def lock1? = false
+    def key2? = false
+    def lock2? = false
+  end
+
+  class Flux < SimpleDelegator
+    def air? = false
+    def flux? = true
+    def unbreakable? = false
+    def player? = false
+    def stone? = false
+    def falling_stone? = false
+    def box? = false
+    def falling_box? = false
+    def key1? = false
+    def lock1? = false
+    def key2? = false
+    def lock2? = false
+  end
+
+  class Unbreakable < SimpleDelegator
+    def air? = false
+    def flux? = false
+    def unbreakable? = true
+    def player? = false
+    def stone? = false
+    def falling_stone? = false
+    def box? = false
+    def falling_box? = false
+    def key1? = false
+    def lock1? = false
+    def key2? = false
+    def lock2? = false
+  end
+
+  class Player < SimpleDelegator
+    def air? = false
+    def flux? = false
+    def unbreakable? = false
+    def player? = true
+    def stone? = false
+    def falling_stone? = false
+    def box? = false
+    def falling_box? = false
+    def key1? = false
+    def lock1? = false
+    def key2? = false
+    def lock2? = false
+  end
+
+  class Stone < SimpleDelegator
+    def air? = false
+    def flux? = false
+    def unbreakable? = false
+    def player? = false
+    def stone? = true
+    def falling_stone? = false
+    def box? = false
+    def falling_box? = false
+    def key1? = false
+    def lock1? = false
+    def key2? = false
+    def lock2? = false
+  end
+
+  class FallingStone < SimpleDelegator
+    def air? = false
+    def flux? = false
+    def unbreakable? = false
+    def player? = false
+    def stone? = false
+    def falling_stone? = true
+    def box? = false
+    def falling_box? = false
+    def key1? = false
+    def lock1? = false
+    def key2? = false
+    def lock2? = false
+  end
+
+  class Box < SimpleDelegator
+    def air? = false
+    def flux? = false
+    def unbreakable? = false
+    def player? = false
+    def stone? = false
+    def falling_stone? = false
+    def box? = true
+    def falling_box? = false
+    def key1? = false
+    def lock1? = false
+    def key2? = false
+    def lock2? = false
+  end
+
+  class FallingBox < SimpleDelegator
+    def air? = false
+    def flux? = false
+    def unbreakable? = false
+    def player? = false
+    def stone? = false
+    def falling_stone? = false
+    def box? = false
+    def falling_box? = true
+    def key1? = false
+    def lock1? = false
+    def key2? = false
+    def lock2? = false
+  end
+
+  class Key1 < SimpleDelegator
+    def air? = false
+    def flux? = false
+    def unbreakable? = false
+    def player? = false
+    def stone? = false
+    def falling_stone? = false
+    def box? = false
+    def falling_box? = false
+    def key1? = true
+    def lock1? = false
+    def key2? = false
+    def lock2? = false
+  end
+
+  class Lock1 < SimpleDelegator
+    def air? = false
+    def flux? = false
+    def unbreakable? = false
+    def player? = false
+    def stone? = false
+    def falling_stone? = false
+    def box? = false
+    def falling_box? = false
+    def key1? = false
+    def lock1? = true
+    def key2? = false
+    def lock2? = false
+  end
+
+  class Key2 < SimpleDelegator
+    def air? = false
+    def flux? = false
+    def unbreakable? = false
+    def player? = false
+    def stone? = false
+    def falling_stone? = false
+    def box? = false
+    def falling_box? = false
+    def key1? = false
+    def lock1? = false
+    def key2? = true
+    def lock2? = false
+  end
+
+  class Lock2 < SimpleDelegator
+    def air? = false
+    def flux? = false
+    def unbreakable? = false
+    def player? = false
+    def stone? = false
+    def falling_stone? = false
+    def box? = false
+    def falling_box? = false
+    def key1? = false
+    def lock1? = false
+    def key2? = false
+    def lock2? = true
+  end
+
   def run
     @playerx = 1
     @playery = 1
@@ -80,12 +260,13 @@ class Main
       [2, 4, 1, 1, 1, 9, 0, 2],
       [2, 2, 2, 2, 2, 2, 2, 2],
     ]
+    transform_map
 
     @inputs = []
 
-    # ruby2d call to run the gameLoop
+    # ruby2d call to run the game_loop
     Window.update do
-      gameLoop
+      game_loop
     end
 
     Window.on :key_down do |e|
@@ -127,51 +308,86 @@ class Main
     Window.show
   end
 
-  def remove(tile)
+  def transform_map
+    @map.count.times do |y|
+      @map.first.count.times do |x|
+        @map[y][x] = transform_tile(@map[y][x])
+      end
+    end
+  end
+
+  def transform_tile(tile)
+    case tile
+    when TILE[:AIR] then Air.new(self)
+    when TILE[:FLUX] then Flux.new(self)
+    when TILE[:UNBREAKABLE] then Unbreakable.new(self)
+    when TILE[:PLAYER] then Player.new(self)
+    when TILE[:STONE] then Stone.new(self)
+    when TILE[:FALLING_STONE] then FallingStone.new(self)
+    when TILE[:BOX] then Box.new(self)
+    when TILE[:FALLING_BOX] then FallingBox.new(self)
+    when TILE[:KEY1] then Key1.new(self)
+    when TILE[:LOCK1] then Lock1.new(self)
+    when TILE[:KEY2] then Key2.new(self)
+    when TILE[:LOCK2] then Lock2.new(self)
+    end
+  end
+
+  def remove_lock1
     (0...@map.length).each do |y|
       (0...@map[y].length).each do |x|
-        if @map[y][x] == tile
-          @map[y][x] = TILE[:AIR]
+        if @map[y][x].lock1?
+          @map[y][x] = Air.new(self)
+        end
+      end
+    end
+  end
+
+  def remove_lock2
+    (0...@map.length).each do |y|
+      (0...@map[y].length).each do |x|
+        if @map[y][x].lock2?
+          @map[y][x] = Air.new(self)
         end
       end
     end
   end
 
   def move_to_tile(newx, newy)
-    @map[@playery][@playerx] = TILE[:AIR]
-    @map[newy][newx] = TILE[:PLAYER]
+    @map[@playery][@playerx] = Air.new(self)
+    @map[newy][newx] = Player.new(self)
     @playerx = newx
     @playery = newy
   end
 
   def move_horizontal(dx)
-    if @map[@playery][@playerx + dx] == TILE[:FLUX] ||
-       @map[@playery][@playerx + dx] == TILE[:AIR]
+    if @map[@playery][@playerx + dx].flux? ||
+       @map[@playery][@playerx + dx].air?
       move_to_tile(@playerx + dx, @playery)
-    elsif (@map[@playery][@playerx + dx] == TILE[:STONE] ||
-      @map[@playery][@playerx + dx] == TILE[:BOX]) &&
-          @map[@playery][@playerx + dx + dx] == TILE[:AIR] &&
-          @map[@playery + 1][@playerx + dx] != TILE[:AIR]
+    elsif (@map[@playery][@playerx + dx].stone? ||
+      @map[@playery][@playerx + dx].box?) &&
+          @map[@playery][@playerx + dx + dx].air? &&
+          !@map[@playery + 1][@playerx + dx].air?
       @map[@playery][@playerx + dx + dx] = @map[@playery][@playerx + dx]
       move_to_tile(@playerx + dx, @playery)
-    elsif @map[@playery][@playerx + dx] == TILE[:KEY1]
-      remove(TILE[:LOCK1])
+    elsif @map[@playery][@playerx + dx].key1?
+      remove_lock1
       move_to_tile(@playerx + dx, @playery)
-    elsif @map[@playery][@playerx + dx] == TILE[:KEY2]
-      remove(TILE[:LOCK2])
+    elsif @map[@playery][@playerx + dx].key2?
+      remove_lock2
       move_to_tile(@playerx + dx, @playery)
     end
   end
 
   def move_vertical(dy)
-    if @map[@playery + dy][@playerx] == TILE[:FLUX] ||
-       @map[@playery + dy][@playerx] == TILE[:AIR]
+    if @map[@playery + dy][@playerx].flux? ||
+       @map[@playery + dy][@playerx].air?
       move_to_tile(@playerx, @playery + dy)
-    elsif @map[@playery + dy][@playerx] == TILE[:KEY1]
-      remove(TILE[:LOCK1])
+    elsif @map[@playery + dy][@playerx].key1?
+      remove_lock1
       move_to_tile(@playerx, @playery + dy)
-    elsif @map[@playery + dy][@playerx] == TILE[:KEY2]
-      remove(TILE[:LOCK2])
+    elsif @map[@playery + dy][@playerx].key2?
+      remove_lock2
       move_to_tile(@playerx, @playery + dy)
     end
   end
@@ -195,18 +411,18 @@ class Main
   end
 
   def update_tile(x, y)
-    if (@map[y][x] == TILE[:STONE] || @map[y][x] == TILE[:FALLING_STONE]) &&
-       @map[y + 1][x] == TILE[:AIR]
-      @map[y + 1][x] = TILE[:FALLING_STONE]
-      @map[y][x] = TILE[:AIR]
-    elsif (@map[y][x] == TILE[:BOX] || @map[y][x] == TILE[:FALLING_BOX]) &&
-          @map[y + 1][x] == TILE[:AIR]
-      @map[y + 1][x] = TILE[:FALLING_BOX]
-      @map[y][x] = TILE[:AIR]
-    elsif @map[y][x] == TILE[:FALLING_STONE]
-      @map[y][x] = TILE[:STONE]
-    elsif @map[y][x] == TILE[:FALLING_BOX]
-      @map[y][x] = TILE[:BOX]
+    if (@map[y][x].stone? || @map[y][x].falling_stone?) &&
+       @map[y + 1][x].air?
+      @map[y + 1][x] = FallingStone.new(self)
+      @map[y][x] = Air.new(self)
+    elsif (@map[y][x].box? || @map[y][x].falling_box?) &&
+          @map[y + 1][x].air?
+      @map[y + 1][x] = FallingBox.new(self)
+      @map[y][x] = Air.new(self)
+    elsif @map[y][x].falling_stone?
+      @map[y][x] = Stone.new(self)
+    elsif @map[y][x].falling_box?
+      @map[y][x] = Box.new(self)
     end
   end
 
@@ -228,7 +444,7 @@ class Main
       (0...@map[y].length).each do |x|
         color_of_tile(g, x, y)
 
-        if @map[y][x] != TILE[:AIR] && @map[y][x] != TILE[:PLAYER]
+        if !@map[y][x].air? && !@map[y][x].player?
           g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
         end
       end
@@ -236,17 +452,17 @@ class Main
   end
 
   def color_of_tile(g, x, y)
-    if @map[y][x] == TILE[:FLUX]
+    if @map[y][x].flux?
       g.fill_style = "#ccffcc"
-    elsif @map[y][x] == TILE[:UNBREAKABLE]
+    elsif @map[y][x].unbreakable?
       g.fill_style = "#999999"
-    elsif @map[y][x] == TILE[:STONE] || @map[y][x] == TILE[:FALLING_STONE]
+    elsif @map[y][x].stone? || @map[y][x].falling_stone?
       g.fill_style = "#0000cc"
-    elsif @map[y][x] == TILE[:BOX] || @map[y][x] == TILE[:FALLING_BOX]
+    elsif @map[y][x].box? || @map[y][x].falling_box?
       g.fill_style = "#8b4513"
-    elsif @map[y][x] == TILE[:KEY1] || @map[y][x] == TILE[:LOCK1]
+    elsif @map[y][x].key1? || @map[y][x].lock1?
       g.fill_style = "#ffcc00"
-    elsif @map[y][x] == TILE[:KEY2] || @map[y][x] == TILE[:LOCK2]
+    elsif @map[y][x].key2? || @map[y][x].lock2?
       g.fill_style = "#00ccff"
     end
   end
@@ -256,7 +472,7 @@ class Main
     g.fill_rect(@playerx * TILE_SIZE, @playery * TILE_SIZE, TILE_SIZE, TILE_SIZE)
   end
 
-  def gameLoop
+  def game_loop
     update_game
     draw
   end
