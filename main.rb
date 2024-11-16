@@ -183,11 +183,7 @@ class Main
   end
 
   def handle_inputs
-    handle_input(@inputs.pop) until @inputs.empty?
-  end
-
-  def handle_input(input)
-    input.handle_input
+    @inputs.pop.handle_input until @inputs.empty?
   end
 
   def update_map
