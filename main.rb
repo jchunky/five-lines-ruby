@@ -124,8 +124,11 @@ def draw
   g = canvas.get_context("2d")
 
   g.clear_rect(0, 0, canvas.width, canvas.height)
+  draw_map(g)
+  draw_player(g)
+end
 
-  # Draw map
+def draw_map(g)
   (0...@map.length).each do |y|
     (0...@map[y].length).each do |x|
       if @map[y][x] == TILE[:FLUX]
@@ -147,8 +150,9 @@ def draw
       end
     end
   end
+end
 
-  # Draw player
+def draw_player(g)
   g.fill_style = "#ff0000"
   g.fill_rect(@playerx * TILE_SIZE, @playery * TILE_SIZE, TILE_SIZE, TILE_SIZE)
 end
