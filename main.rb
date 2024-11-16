@@ -46,13 +46,15 @@ class Main
 
   class Left < SimpleDelegator
     def handle_input
-      move_horizontal(-1)
+      dx = -1
+      map[playery][playerx + dx].move_horizontal(dx)
     end
   end
 
   class Right < SimpleDelegator
     def handle_input
-      move_horizontal(1)
+      dx = 1
+      map[playery][playerx + dx].move_horizontal(dx)
     end
   end
 
@@ -70,20 +72,7 @@ class Main
 
   class Air < SimpleDelegator
     def move_horizontal(dx)
-      if map[playery][playerx + dx].edible?
-        move_to_tile(playerx + dx, playery)
-      elsif map[playery][playerx + dx].pushable? &&
-            map[playery][playerx + dx + dx].air? &&
-            !map[playery + 1][playerx + dx].air?
-        map[playery][playerx + dx + dx] = map[playery][playerx + dx]
-        move_to_tile(playerx + dx, playery)
-      elsif map[playery][playerx + dx].key1?
-        remove_lock1
-        move_to_tile(playerx + dx, playery)
-      elsif map[playery][playerx + dx].key2?
-        remove_lock2
-        move_to_tile(playerx + dx, playery)
-      end
+      move_to_tile(playerx + dx, playery)
     end
 
     def draw(g, x, y)
@@ -107,20 +96,7 @@ class Main
 
   class Flux < SimpleDelegator
     def move_horizontal(dx)
-      if map[playery][playerx + dx].edible?
-        move_to_tile(playerx + dx, playery)
-      elsif map[playery][playerx + dx].pushable? &&
-            map[playery][playerx + dx + dx].air? &&
-            !map[playery + 1][playerx + dx].air?
-        map[playery][playerx + dx + dx] = map[playery][playerx + dx]
-        move_to_tile(playerx + dx, playery)
-      elsif map[playery][playerx + dx].key1?
-        remove_lock1
-        move_to_tile(playerx + dx, playery)
-      elsif map[playery][playerx + dx].key2?
-        remove_lock2
-        move_to_tile(playerx + dx, playery)
-      end
+      move_to_tile(playerx + dx, playery)
     end
 
     def draw(g, x, y)
@@ -194,18 +170,9 @@ class Main
 
   class Stone < SimpleDelegator
     def move_horizontal(dx)
-      if map[playery][playerx + dx].edible?
-        move_to_tile(playerx + dx, playery)
-      elsif map[playery][playerx + dx].pushable? &&
-            map[playery][playerx + dx + dx].air? &&
-            !map[playery + 1][playerx + dx].air?
+      if map[playery][playerx + dx + dx].air? &&
+         !map[playery + 1][playerx + dx].air?
         map[playery][playerx + dx + dx] = map[playery][playerx + dx]
-        move_to_tile(playerx + dx, playery)
-      elsif map[playery][playerx + dx].key1?
-        remove_lock1
-        move_to_tile(playerx + dx, playery)
-      elsif map[playery][playerx + dx].key2?
-        remove_lock2
         move_to_tile(playerx + dx, playery)
       end
     end
@@ -258,18 +225,9 @@ class Main
 
   class Box < SimpleDelegator
     def move_horizontal(dx)
-      if map[playery][playerx + dx].edible?
-        move_to_tile(playerx + dx, playery)
-      elsif map[playery][playerx + dx].pushable? &&
-            map[playery][playerx + dx + dx].air? &&
-            !map[playery + 1][playerx + dx].air?
+      if map[playery][playerx + dx + dx].air? &&
+         !map[playery + 1][playerx + dx].air?
         map[playery][playerx + dx + dx] = map[playery][playerx + dx]
-        move_to_tile(playerx + dx, playery)
-      elsif map[playery][playerx + dx].key1?
-        remove_lock1
-        move_to_tile(playerx + dx, playery)
-      elsif map[playery][playerx + dx].key2?
-        remove_lock2
         move_to_tile(playerx + dx, playery)
       end
     end
@@ -322,20 +280,8 @@ class Main
 
   class Key1 < SimpleDelegator
     def move_horizontal(dx)
-      if map[playery][playerx + dx].edible?
-        move_to_tile(playerx + dx, playery)
-      elsif map[playery][playerx + dx].pushable? &&
-            map[playery][playerx + dx + dx].air? &&
-            !map[playery + 1][playerx + dx].air?
-        map[playery][playerx + dx + dx] = map[playery][playerx + dx]
-        move_to_tile(playerx + dx, playery)
-      elsif map[playery][playerx + dx].key1?
-        remove_lock1
-        move_to_tile(playerx + dx, playery)
-      elsif map[playery][playerx + dx].key2?
-        remove_lock2
-        move_to_tile(playerx + dx, playery)
-      end
+      remove_lock1
+      move_to_tile(playerx + dx, playery)
     end
 
     def draw(g, x, y)
@@ -386,20 +332,8 @@ class Main
 
   class Key2 < SimpleDelegator
     def move_horizontal(dx)
-      if map[playery][playerx + dx].edible?
-        move_to_tile(playerx + dx, playery)
-      elsif map[playery][playerx + dx].pushable? &&
-            map[playery][playerx + dx + dx].air? &&
-            !map[playery + 1][playerx + dx].air?
-        map[playery][playerx + dx + dx] = map[playery][playerx + dx]
-        move_to_tile(playerx + dx, playery)
-      elsif map[playery][playerx + dx].key1?
-        remove_lock1
-        move_to_tile(playerx + dx, playery)
-      elsif map[playery][playerx + dx].key2?
-        remove_lock2
-        move_to_tile(playerx + dx, playery)
-      end
+      remove_lock2
+      move_to_tile(playerx + dx, playery)
     end
 
     def draw(g, x, y)
@@ -560,10 +494,6 @@ class Main
     @map[newy][newx] = Player.new(self)
     @playerx = newx
     @playery = newy
-  end
-
-  def move_horizontal(dx)
-    map[playery][playerx + dx].move_horizontal(dx)
   end
 
   def move_vertical(dy)
