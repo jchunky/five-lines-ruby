@@ -59,6 +59,18 @@ module Input
   end
 end
 
+module FallingStates
+  class Falling < SimpleDelegator
+    def falling? = true
+    def resting? = false
+  end
+
+  class Resting < SimpleDelegator
+    def falling? = false
+    def resting? = true
+  end
+end
+
 module Tiles
   include Config
 
@@ -207,10 +219,10 @@ module Tiles
 
     def update(x, y)
       if map[y + 1][x].air?
-        map[y + 1][x] = Stone.new(self, :falling)
+        map[y + 1][x] = Stone.new(self, FallingStates::Falling.new(self))
         map[y][x] = Air.new(self)
-      elsif @falling_state == :falling
-        map[y][x] = Stone.new(self, :resting)
+      elsif @falling_state.falling?
+        map[y][x] = Stone.new(self, FallingStates::Resting.new(self))
       end
     end
 
@@ -219,7 +231,7 @@ module Tiles
 
     def move_horizontal(dx)
       if map[playery][playerx + dx + dx].air? &&
-         !map[playery + 1][playerx + dx].air? && @falling_state == :resting
+         !map[playery + 1][playerx + dx].air? && @falling_state.resting?
         map[playery][playerx + dx + dx] = map[playery][playerx + dx]
         move_to_tile(playerx + dx, playery)
       end
@@ -238,8 +250,8 @@ module Tiles
     def flux? = false
     def unbreakable? = false
     def player? = false
-    def stone? = @falling_state == :resting
-    def falling_stone? = @falling_state == :falling
+    def stone? = @falling_state.resting?
+    def falling_stone? = @falling_state.falling?
     def box? = false
     def falling_box? = false
     def key1? = false
@@ -257,10 +269,10 @@ module Tiles
 
     def update(x, y)
       if map[y + 1][x].air?
-        map[y + 1][x] = Box.new(self, :falling)
+        map[y + 1][x] = Box.new(self, FallingStates::Falling.new(self))
         map[y][x] = Air.new(self)
-      elsif @falling_state == :falling
-        map[y][x] = Box.new(self, :resting)
+      elsif @falling_state.falling?
+        map[y][x] = Box.new(self, FallingStates::Resting.new(self))
       end
     end
 
@@ -269,7 +281,7 @@ module Tiles
 
     def move_horizontal(dx)
       if map[playery][playerx + dx + dx].air? &&
-         !map[playery + 1][playerx + dx].air? && @falling_state == :resting
+         !map[playery + 1][playerx + dx].air? && @falling_state.resting?
         map[playery][playerx + dx + dx] = map[playery][playerx + dx]
         move_to_tile(playerx + dx, playery)
       end
@@ -290,8 +302,8 @@ module Tiles
     def player? = false
     def stone? = false
     def falling_stone? = false
-    def box? = @falling_state == :resting
-    def falling_box? = @falling_state == :falling
+    def box? = @falling_state.resting?
+    def falling_box? = @falling_state.falling?
     def key1? = false
     def lock1? = false
     def key2? = false
@@ -542,10 +554,10 @@ class Main
     when TILE[:FLUX] then Flux.new(self)
     when TILE[:UNBREAKABLE] then Unbreakable.new(self)
     when TILE[:PLAYER] then Player.new(self)
-    when TILE[:STONE] then Stone.new(self, :resting)
-    when TILE[:FALLING_STONE] then Stone.new(self, :falling)
-    when TILE[:BOX] then Box.new(self, :resting)
-    when TILE[:FALLING_BOX] then Box.new(self, :falling)
+    when TILE[:STONE] then Stone.new(self, FallingStates::Resting.new(self))
+    when TILE[:FALLING_STONE] then Stone.new(self, FallingStates::Falling.new(self))
+    when TILE[:BOX] then Box.new(self, FallingStates::Resting.new(self))
+    when TILE[:FALLING_BOX] then Box.new(self, FallingStates::Falling.new(self))
     when TILE[:KEY1] then Key1.new(self)
     when TILE[:LOCK1] then Lock1.new(self)
     when TILE[:KEY2] then Key2.new(self)
