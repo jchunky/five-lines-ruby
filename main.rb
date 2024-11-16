@@ -64,6 +64,9 @@ module Tiles
 
   class Air < SimpleDelegator
     include Config
+    def update(x, y)
+    end
+
     def move_vertical(dy)
       move_to_tile(playerx, playery + dy)
     end
@@ -95,6 +98,9 @@ module Tiles
 
   class Flux < SimpleDelegator
     include Config
+    def update(x, y)
+    end
+
     def move_vertical(dy)
       move_to_tile(playerx, playery + dy)
     end
@@ -128,6 +134,9 @@ module Tiles
 
   class Unbreakable < SimpleDelegator
     include Config
+    def update(x, y)
+    end
+
     def move_vertical(dy)
     end
 
@@ -159,6 +168,9 @@ module Tiles
 
   class Player < SimpleDelegator
     include Config
+    def update(x, y)
+    end
+
     def move_vertical(dy)
     end
 
@@ -188,6 +200,13 @@ module Tiles
 
   class Stone < SimpleDelegator
     include Config
+    def update(x, y)
+      if map[y + 1][x].air?
+        map[y + 1][x] = FallingStone.new(self)
+        map[y][x] = Air.new(self)
+      end
+    end
+
     def move_vertical(dy)
     end
 
@@ -224,6 +243,15 @@ module Tiles
 
   class FallingStone < SimpleDelegator
     include Config
+    def update(x, y)
+      if map[y + 1][x].air?
+        map[y + 1][x] = FallingStone.new(self)
+        map[y][x] = Air.new(self)
+      else
+        map[y][x] = Stone.new(self)
+      end
+    end
+
     def move_vertical(dy)
     end
 
@@ -255,6 +283,13 @@ module Tiles
 
   class Box < SimpleDelegator
     include Config
+    def update(x, y)
+      if map[y + 1][x].air?
+        map[y + 1][x] = FallingBox.new(self)
+        map[y][x] = Air.new(self)
+      end
+    end
+
     def move_vertical(dy)
     end
 
@@ -291,6 +326,15 @@ module Tiles
 
   class FallingBox < SimpleDelegator
     include Config
+    def update(x, y)
+      if map[y + 1][x].air?
+        map[y + 1][x] = FallingBox.new(self)
+        map[y][x] = Air.new(self)
+      else
+        map[y][x] = Box.new(self)
+      end
+    end
+
     def move_vertical(dy)
     end
 
@@ -322,6 +366,9 @@ module Tiles
 
   class Key1 < SimpleDelegator
     include Config
+    def update(x, y)
+    end
+
     def move_vertical(dy)
       remove_lock1
       move_to_tile(playerx, playery + dy)
@@ -357,6 +404,9 @@ module Tiles
 
   class Lock1 < SimpleDelegator
     include Config
+    def update(x, y)
+    end
+
     def move_vertical(dy)
     end
 
@@ -388,6 +438,9 @@ module Tiles
 
   class Key2 < SimpleDelegator
     include Config
+    def update(x, y)
+    end
+
     def move_vertical(dy)
       remove_lock2
       move_to_tile(playerx, playery + dy)
@@ -423,6 +476,9 @@ module Tiles
 
   class Lock2 < SimpleDelegator
     include Config
+    def update(x, y)
+    end
+
     def move_vertical(dy)
     end
 
@@ -609,17 +665,7 @@ class Main
   end
 
   def update_tile(x, y)
-    if @map[y][x].stony? && @map[y + 1][x].air?
-      @map[y + 1][x] = FallingStone.new(self)
-      @map[y][x] = Air.new(self)
-    elsif @map[y][x].boxy? && @map[y + 1][x].air?
-      @map[y + 1][x] = FallingBox.new(self)
-      @map[y][x] = Air.new(self)
-    elsif @map[y][x].falling_stone?
-      @map[y][x] = Stone.new(self)
-    elsif @map[y][x].falling_box?
-      @map[y][x] = Box.new(self)
-    end
+    map[y][x].update(x, y)
   end
 
   def draw
