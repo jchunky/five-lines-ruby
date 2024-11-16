@@ -19,10 +19,6 @@ TILE = {
   LOCK2: 11,
 }
 
-INPUT = {
-  UP: 0, DOWN: 1, LEFT: 2, RIGHT: 3
-}
-
 @playerx = 1
 @playery = 1
 
