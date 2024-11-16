@@ -69,6 +69,23 @@ class Main
   end
 
   class Air < SimpleDelegator
+    def move_horizontal(dx)
+      if map[playery][playerx + dx].edible?
+        move_to_tile(playerx + dx, playery)
+      elsif map[playery][playerx + dx].pushable? &&
+            map[playery][playerx + dx + dx].air? &&
+            !map[playery + 1][playerx + dx].air?
+        map[playery][playerx + dx + dx] = map[playery][playerx + dx]
+        move_to_tile(playerx + dx, playery)
+      elsif map[playery][playerx + dx].key1?
+        remove_lock1
+        move_to_tile(playerx + dx, playery)
+      elsif map[playery][playerx + dx].key2?
+        remove_lock2
+        move_to_tile(playerx + dx, playery)
+      end
+    end
+
     def draw(g, x, y)
     end
 
@@ -89,6 +106,23 @@ class Main
   end
 
   class Flux < SimpleDelegator
+    def move_horizontal(dx)
+      if map[playery][playerx + dx].edible?
+        move_to_tile(playerx + dx, playery)
+      elsif map[playery][playerx + dx].pushable? &&
+            map[playery][playerx + dx + dx].air? &&
+            !map[playery + 1][playerx + dx].air?
+        map[playery][playerx + dx + dx] = map[playery][playerx + dx]
+        move_to_tile(playerx + dx, playery)
+      elsif map[playery][playerx + dx].key1?
+        remove_lock1
+        move_to_tile(playerx + dx, playery)
+      elsif map[playery][playerx + dx].key2?
+        remove_lock2
+        move_to_tile(playerx + dx, playery)
+      end
+    end
+
     def draw(g, x, y)
       g.fill_style = "#ccffcc"
       g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
@@ -111,6 +145,9 @@ class Main
   end
 
   class Unbreakable < SimpleDelegator
+    def move_horizontal(dx)
+    end
+
     def draw(g, x, y)
       g.fill_style = "#999999"
       g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
@@ -133,6 +170,9 @@ class Main
   end
 
   class Player < SimpleDelegator
+    def move_horizontal(dx)
+    end
+
     def draw(g, x, y)
     end
 
@@ -153,6 +193,23 @@ class Main
   end
 
   class Stone < SimpleDelegator
+    def move_horizontal(dx)
+      if map[playery][playerx + dx].edible?
+        move_to_tile(playerx + dx, playery)
+      elsif map[playery][playerx + dx].pushable? &&
+            map[playery][playerx + dx + dx].air? &&
+            !map[playery + 1][playerx + dx].air?
+        map[playery][playerx + dx + dx] = map[playery][playerx + dx]
+        move_to_tile(playerx + dx, playery)
+      elsif map[playery][playerx + dx].key1?
+        remove_lock1
+        move_to_tile(playerx + dx, playery)
+      elsif map[playery][playerx + dx].key2?
+        remove_lock2
+        move_to_tile(playerx + dx, playery)
+      end
+    end
+
     def draw(g, x, y)
       g.fill_style = "#0000cc"
       g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
@@ -175,6 +232,9 @@ class Main
   end
 
   class FallingStone < SimpleDelegator
+    def move_horizontal(dx)
+    end
+
     def draw(g, x, y)
       g.fill_style = "#0000cc"
       g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
@@ -197,6 +257,23 @@ class Main
   end
 
   class Box < SimpleDelegator
+    def move_horizontal(dx)
+      if map[playery][playerx + dx].edible?
+        move_to_tile(playerx + dx, playery)
+      elsif map[playery][playerx + dx].pushable? &&
+            map[playery][playerx + dx + dx].air? &&
+            !map[playery + 1][playerx + dx].air?
+        map[playery][playerx + dx + dx] = map[playery][playerx + dx]
+        move_to_tile(playerx + dx, playery)
+      elsif map[playery][playerx + dx].key1?
+        remove_lock1
+        move_to_tile(playerx + dx, playery)
+      elsif map[playery][playerx + dx].key2?
+        remove_lock2
+        move_to_tile(playerx + dx, playery)
+      end
+    end
+
     def draw(g, x, y)
       g.fill_style = "#8b4513"
       g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
@@ -219,6 +296,9 @@ class Main
   end
 
   class FallingBox < SimpleDelegator
+    def move_horizontal(dx)
+    end
+
     def draw(g, x, y)
       g.fill_style = "#8b4513"
       g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
@@ -241,6 +321,23 @@ class Main
   end
 
   class Key1 < SimpleDelegator
+    def move_horizontal(dx)
+      if map[playery][playerx + dx].edible?
+        move_to_tile(playerx + dx, playery)
+      elsif map[playery][playerx + dx].pushable? &&
+            map[playery][playerx + dx + dx].air? &&
+            !map[playery + 1][playerx + dx].air?
+        map[playery][playerx + dx + dx] = map[playery][playerx + dx]
+        move_to_tile(playerx + dx, playery)
+      elsif map[playery][playerx + dx].key1?
+        remove_lock1
+        move_to_tile(playerx + dx, playery)
+      elsif map[playery][playerx + dx].key2?
+        remove_lock2
+        move_to_tile(playerx + dx, playery)
+      end
+    end
+
     def draw(g, x, y)
       g.fill_style = "#ffcc00"
       g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
@@ -263,6 +360,9 @@ class Main
   end
 
   class Lock1 < SimpleDelegator
+    def move_horizontal(dx)
+    end
+
     def draw(g, x, y)
       g.fill_style = "#ffcc00"
       g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
@@ -285,6 +385,23 @@ class Main
   end
 
   class Key2 < SimpleDelegator
+    def move_horizontal(dx)
+      if map[playery][playerx + dx].edible?
+        move_to_tile(playerx + dx, playery)
+      elsif map[playery][playerx + dx].pushable? &&
+            map[playery][playerx + dx + dx].air? &&
+            !map[playery + 1][playerx + dx].air?
+        map[playery][playerx + dx + dx] = map[playery][playerx + dx]
+        move_to_tile(playerx + dx, playery)
+      elsif map[playery][playerx + dx].key1?
+        remove_lock1
+        move_to_tile(playerx + dx, playery)
+      elsif map[playery][playerx + dx].key2?
+        remove_lock2
+        move_to_tile(playerx + dx, playery)
+      end
+    end
+
     def draw(g, x, y)
       g.fill_style = "#00ccff"
       g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
@@ -307,6 +424,9 @@ class Main
   end
 
   class Lock2 < SimpleDelegator
+    def move_horizontal(dx)
+    end
+
     def draw(g, x, y)
       g.fill_style = "#00ccff"
       g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
@@ -443,20 +563,7 @@ class Main
   end
 
   def move_horizontal(dx)
-    if map[playery][playerx + dx].edible?
-      move_to_tile(playerx + dx, playery)
-    elsif map[playery][playerx + dx].pushable? &&
-          map[playery][playerx + dx + dx].air? &&
-          !map[playery + 1][playerx + dx].air?
-      map[playery][playerx + dx + dx] = map[playery][playerx + dx]
-      move_to_tile(playerx + dx, playery)
-    elsif map[playery][playerx + dx].key1?
-      remove_lock1
-      move_to_tile(playerx + dx, playery)
-    elsif map[playery][playerx + dx].key2?
-      remove_lock2
-      move_to_tile(playerx + dx, playery)
-    end
+    map[playery][playerx + dx].move_horizontal(dx)
   end
 
   def move_vertical(dy)
