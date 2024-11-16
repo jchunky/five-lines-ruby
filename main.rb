@@ -1,7 +1,7 @@
 require "ruby2d"
 require "delegate"
 
-class Main
+module Config
   TILE_SIZE = 30
   FPS = 30
   SLEEP = 1000 / FPS
@@ -25,24 +25,10 @@ class Main
   UP_KEY = "up"
   RIGHT_KEY = "right"
   DOWN_KEY = "down"
+end
 
-  # Hacks to make the ruby2d API look/act similar to the JS canvas/context/graphics API
-  class GraphicsObject
-    attr_accessor :fill_style
-
-    def initialize
-      @fill_style = ""
-    end
-
-    def clear_rect(x, y, width, height)
-      Window.clear
-      Rectangle.new(x: x, y: y, width: width, height: height, color: "white")
-    end
-
-    def fill_rect(x, y, width, height)
-      Rectangle.new(x: x, y: y, width: width, height: height, color: @fill_style)
-    end
-  end
+module Input
+  include Config
 
   class Left < SimpleDelegator
     def handle_input
@@ -71,8 +57,13 @@ class Main
       map[playery + dy][playerx].move_vertical(dy)
     end
   end
+end
+
+module Tiles
+  include Config
 
   class Air < SimpleDelegator
+    include Config
     def move_vertical(dy)
       move_to_tile(playerx, playery + dy)
     end
@@ -101,6 +92,7 @@ class Main
   end
 
   class Flux < SimpleDelegator
+    include Config
     def move_vertical(dy)
       move_to_tile(playerx, playery + dy)
     end
@@ -131,6 +123,7 @@ class Main
   end
 
   class Unbreakable < SimpleDelegator
+    include Config
     def move_vertical(dy)
     end
 
@@ -159,6 +152,7 @@ class Main
   end
 
   class Player < SimpleDelegator
+    include Config
     def move_vertical(dy)
     end
 
@@ -185,6 +179,7 @@ class Main
   end
 
   class Stone < SimpleDelegator
+    include Config
     def move_vertical(dy)
     end
 
@@ -218,6 +213,7 @@ class Main
   end
 
   class FallingStone < SimpleDelegator
+    include Config
     def move_vertical(dy)
     end
 
@@ -246,6 +242,7 @@ class Main
   end
 
   class Box < SimpleDelegator
+    include Config
     def move_vertical(dy)
     end
 
@@ -279,6 +276,7 @@ class Main
   end
 
   class FallingBox < SimpleDelegator
+    include Config
     def move_vertical(dy)
     end
 
@@ -307,6 +305,7 @@ class Main
   end
 
   class Key1 < SimpleDelegator
+    include Config
     def move_vertical(dy)
       remove_lock1
       move_to_tile(playerx, playery + dy)
@@ -339,6 +338,7 @@ class Main
   end
 
   class Lock1 < SimpleDelegator
+    include Config
     def move_vertical(dy)
     end
 
@@ -367,6 +367,7 @@ class Main
   end
 
   class Key2 < SimpleDelegator
+    include Config
     def move_vertical(dy)
       remove_lock2
       move_to_tile(playerx, playery + dy)
@@ -399,6 +400,7 @@ class Main
   end
 
   class Lock2 < SimpleDelegator
+    include Config
     def move_vertical(dy)
     end
 
@@ -425,6 +427,30 @@ class Main
     def key2? = false
     def lock2? = true
   end
+end
+
+# Hacks to make the ruby2d API look/act similar to the JS canvas/context/graphics API
+class GraphicsObject
+  attr_accessor :fill_style
+
+  def initialize
+    @fill_style = ""
+  end
+
+  def clear_rect(x, y, width, height)
+    Window.clear
+    Rectangle.new(x: x, y: y, width: width, height: height, color: "white")
+  end
+
+  def fill_rect(x, y, width, height)
+    Rectangle.new(x: x, y: y, width: width, height: height, color: @fill_style)
+  end
+end
+
+class Main
+  include Config
+  include Input
+  include Tiles
 
   attr_accessor :map, :playerx, :playery
 
