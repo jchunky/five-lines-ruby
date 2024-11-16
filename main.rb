@@ -497,15 +497,15 @@ class Main
   end
 
   def move_vertical(dy)
-    if @map[@playery + dy][@playerx].flux? ||
-       @map[@playery + dy][@playerx].air?
-      move_to_tile(@playerx, @playery + dy)
-    elsif @map[@playery + dy][@playerx].key1?
+    if map[playery + dy][playerx].flux? ||
+       map[playery + dy][playerx].air?
+      move_to_tile(playerx, playery + dy)
+    elsif map[playery + dy][playerx].key1?
       remove_lock1
-      move_to_tile(@playerx, @playery + dy)
-    elsif @map[@playery + dy][@playerx].key2?
+      move_to_tile(playerx, playery + dy)
+    elsif map[playery + dy][playerx].key2?
       remove_lock2
-      move_to_tile(@playerx, @playery + dy)
+      move_to_tile(playerx, playery + dy)
     end
   end
 
