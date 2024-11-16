@@ -72,6 +72,8 @@ class Main
     def draw(g, x, y)
     end
 
+    def edible? = true
+    def pushable? = false
     def air? = true
     def flux? = false
     def unbreakable? = false
@@ -92,6 +94,8 @@ class Main
       g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
     end
 
+    def edible? = true
+    def pushable? = false
     def air? = false
     def flux? = true
     def unbreakable? = false
@@ -112,6 +116,8 @@ class Main
       g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
     end
 
+    def edible? = false
+    def pushable? = false
     def air? = false
     def flux? = false
     def unbreakable? = true
@@ -130,6 +136,8 @@ class Main
     def draw(g, x, y)
     end
 
+    def edible? = false
+    def pushable? = false
     def air? = false
     def flux? = false
     def unbreakable? = false
@@ -150,6 +158,8 @@ class Main
       g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
     end
 
+    def edible? = false
+    def pushable? = true
     def air? = false
     def flux? = false
     def unbreakable? = false
@@ -170,6 +180,8 @@ class Main
       g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
     end
 
+    def edible? = false
+    def pushable? = false
     def air? = false
     def flux? = false
     def unbreakable? = false
@@ -190,6 +202,8 @@ class Main
       g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
     end
 
+    def edible? = false
+    def pushable? = true
     def air? = false
     def flux? = false
     def unbreakable? = false
@@ -210,6 +224,8 @@ class Main
       g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
     end
 
+    def edible? = false
+    def pushable? = false
     def air? = false
     def flux? = false
     def unbreakable? = false
@@ -230,6 +246,8 @@ class Main
       g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
     end
 
+    def edible? = false
+    def pushable? = false
     def air? = false
     def flux? = false
     def unbreakable? = false
@@ -250,6 +268,8 @@ class Main
       g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
     end
 
+    def edible? = false
+    def pushable? = false
     def air? = false
     def flux? = false
     def unbreakable? = false
@@ -270,6 +290,8 @@ class Main
       g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
     end
 
+    def edible? = false
+    def pushable? = false
     def air? = false
     def flux? = false
     def unbreakable? = false
@@ -290,6 +312,8 @@ class Main
       g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
     end
 
+    def edible? = false
+    def pushable? = false
     def air? = false
     def flux? = false
     def unbreakable? = false
@@ -417,11 +441,9 @@ class Main
   end
 
   def move_horizontal(dx)
-    if @map[@playery][@playerx + dx].flux? ||
-       @map[@playery][@playerx + dx].air?
+    if @map[@playery][@playerx + dx].edible?
       move_to_tile(@playerx + dx, @playery)
-    elsif (@map[@playery][@playerx + dx].stone? ||
-      @map[@playery][@playerx + dx].box?) &&
+    elsif @map[@playery][@playerx + dx].pushable? &&
           @map[@playery][@playerx + dx + dx].air? &&
           !@map[@playery + 1][@playerx + dx].air?
       @map[@playery][@playerx + dx + dx] = @map[@playery][@playerx + dx]
