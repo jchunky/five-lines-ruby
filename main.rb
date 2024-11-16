@@ -498,13 +498,9 @@ class Main
   def draw_map(g)
     (0...@map.length).each do |y|
       (0...@map[y].length).each do |x|
-        draw_tile(g, x, y)
+        @map[y][x].draw(g, x, y)
       end
     end
-  end
-
-  def draw_tile(g, x, y)
-    @map[y][x].draw(g, x, y)
   end
 
   def draw_player(g)
