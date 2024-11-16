@@ -75,6 +75,8 @@ module Tiles
     def draw(g, x, y)
     end
 
+    def stony? = false
+    def boxy? = false
     def edible? = true
     def pushable? = false
     def air? = true
@@ -106,6 +108,8 @@ module Tiles
       g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
     end
 
+    def stony? = false
+    def boxy? = false
     def edible? = true
     def pushable? = false
     def air? = false
@@ -135,6 +139,8 @@ module Tiles
       g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
     end
 
+    def stony? = false
+    def boxy? = false
     def edible? = false
     def pushable? = false
     def air? = false
@@ -162,6 +168,8 @@ module Tiles
     def draw(g, x, y)
     end
 
+    def stony? = false
+    def boxy? = false
     def edible? = false
     def pushable? = false
     def air? = false
@@ -196,6 +204,8 @@ module Tiles
       g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
     end
 
+    def stony? = true
+    def boxy? = false
     def edible? = false
     def pushable? = true
     def air? = false
@@ -225,6 +235,8 @@ module Tiles
       g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
     end
 
+    def stony? = true
+    def boxy? = false
     def edible? = false
     def pushable? = false
     def air? = false
@@ -259,6 +271,8 @@ module Tiles
       g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
     end
 
+    def stony? = false
+    def boxy? = true
     def edible? = false
     def pushable? = true
     def air? = false
@@ -288,6 +302,8 @@ module Tiles
       g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
     end
 
+    def stony? = false
+    def boxy? = true
     def edible? = false
     def pushable? = false
     def air? = false
@@ -321,6 +337,8 @@ module Tiles
       g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
     end
 
+    def stony? = false
+    def boxy? = false
     def edible? = false
     def pushable? = false
     def air? = false
@@ -350,6 +368,8 @@ module Tiles
       g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
     end
 
+    def stony? = false
+    def boxy? = false
     def edible? = false
     def pushable? = false
     def air? = false
@@ -383,6 +403,8 @@ module Tiles
       g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
     end
 
+    def stony? = false
+    def boxy? = false
     def edible? = false
     def pushable? = false
     def air? = false
@@ -412,6 +434,8 @@ module Tiles
       g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
     end
 
+    def stony? = false
+    def boxy? = false
     def edible? = false
     def pushable? = false
     def air? = false
@@ -585,12 +609,10 @@ class Main
   end
 
   def update_tile(x, y)
-    if (@map[y][x].stone? || @map[y][x].falling_stone?) &&
-       @map[y + 1][x].air?
+    if @map[y][x].stony? && @map[y + 1][x].air?
       @map[y + 1][x] = FallingStone.new(self)
       @map[y][x] = Air.new(self)
-    elsif (@map[y][x].box? || @map[y][x].falling_box?) &&
-          @map[y + 1][x].air?
+    elsif @map[y][x].boxy? && @map[y + 1][x].air?
       @map[y + 1][x] = FallingBox.new(self)
       @map[y][x] = Air.new(self)
     elsif @map[y][x].falling_stone?
