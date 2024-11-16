@@ -110,20 +110,24 @@ end
 def update_map
   (0...@map.length).to_a.reverse_each do |y|
     (0...@map[y].length).each do |x|
-      if (@map[y][x] == TILE[:STONE] || @map[y][x] == TILE[:FALLING_STONE]) &&
-         @map[y + 1][x] == TILE[:AIR]
-        @map[y + 1][x] = TILE[:FALLING_STONE]
-        @map[y][x] = TILE[:AIR]
-      elsif (@map[y][x] == TILE[:BOX] || @map[y][x] == TILE[:FALLING_BOX]) &&
-            @map[y + 1][x] == TILE[:AIR]
-        @map[y + 1][x] = TILE[:FALLING_BOX]
-        @map[y][x] = TILE[:AIR]
-      elsif @map[y][x] == TILE[:FALLING_STONE]
-        @map[y][x] = TILE[:STONE]
-      elsif @map[y][x] == TILE[:FALLING_BOX]
-        @map[y][x] = TILE[:BOX]
-      end
+      update_tile(x, y)
     end
+  end
+end
+
+def update_tile(x, y)
+  if (@map[y][x] == TILE[:STONE] || @map[y][x] == TILE[:FALLING_STONE]) &&
+     @map[y + 1][x] == TILE[:AIR]
+    @map[y + 1][x] = TILE[:FALLING_STONE]
+    @map[y][x] = TILE[:AIR]
+  elsif (@map[y][x] == TILE[:BOX] || @map[y][x] == TILE[:FALLING_BOX]) &&
+        @map[y + 1][x] == TILE[:AIR]
+    @map[y + 1][x] = TILE[:FALLING_BOX]
+    @map[y][x] = TILE[:AIR]
+  elsif @map[y][x] == TILE[:FALLING_STONE]
+    @map[y][x] = TILE[:STONE]
+  elsif @map[y][x] == TILE[:FALLING_BOX]
+    @map[y][x] = TILE[:BOX]
   end
 end
 
