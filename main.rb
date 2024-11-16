@@ -328,6 +328,8 @@ class Main
     def lock2? = true
   end
 
+  attr_accessor :map, :playerx, :playery
+
   def run
     @playerx = 1
     @playery = 1
@@ -441,19 +443,19 @@ class Main
   end
 
   def move_horizontal(dx)
-    if @map[@playery][@playerx + dx].edible?
-      move_to_tile(@playerx + dx, @playery)
-    elsif @map[@playery][@playerx + dx].pushable? &&
-          @map[@playery][@playerx + dx + dx].air? &&
-          !@map[@playery + 1][@playerx + dx].air?
-      @map[@playery][@playerx + dx + dx] = @map[@playery][@playerx + dx]
-      move_to_tile(@playerx + dx, @playery)
-    elsif @map[@playery][@playerx + dx].key1?
+    if map[playery][playerx + dx].edible?
+      move_to_tile(playerx + dx, playery)
+    elsif map[playery][playerx + dx].pushable? &&
+          map[playery][playerx + dx + dx].air? &&
+          !map[playery + 1][playerx + dx].air?
+      map[playery][playerx + dx + dx] = map[playery][playerx + dx]
+      move_to_tile(playerx + dx, playery)
+    elsif map[playery][playerx + dx].key1?
       remove_lock1
-      move_to_tile(@playerx + dx, @playery)
-    elsif @map[@playery][@playerx + dx].key2?
+      move_to_tile(playerx + dx, playery)
+    elsif map[playery][playerx + dx].key2?
       remove_lock2
-      move_to_tile(@playerx + dx, @playery)
+      move_to_tile(playerx + dx, playery)
     end
   end
 
