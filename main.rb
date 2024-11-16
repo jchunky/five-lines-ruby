@@ -204,6 +204,8 @@ module Tiles
       if map[y + 1][x].air?
         map[y + 1][x] = FallingStone.new(self)
         map[y][x] = Air.new(self)
+      elsif falling_stone?
+        map[y][x] = Stone.new(self)
       end
     end
 
@@ -212,7 +214,7 @@ module Tiles
 
     def move_horizontal(dx)
       if map[playery][playerx + dx + dx].air? &&
-         !map[playery + 1][playerx + dx].air?
+         !map[playery + 1][playerx + dx].air? && stone?
         map[playery][playerx + dx + dx] = map[playery][playerx + dx]
         move_to_tile(playerx + dx, playery)
       end
@@ -247,7 +249,7 @@ module Tiles
       if map[y + 1][x].air?
         map[y + 1][x] = FallingStone.new(self)
         map[y][x] = Air.new(self)
-      else
+      elsif falling_stone?
         map[y][x] = Stone.new(self)
       end
     end
@@ -256,6 +258,11 @@ module Tiles
     end
 
     def move_horizontal(dx)
+      if map[playery][playerx + dx + dx].air? &&
+         !map[playery + 1][playerx + dx].air? && stone?
+        map[playery][playerx + dx + dx] = map[playery][playerx + dx]
+        move_to_tile(playerx + dx, playery)
+      end
     end
 
     def draw(g, x, y)
@@ -287,6 +294,8 @@ module Tiles
       if map[y + 1][x].air?
         map[y + 1][x] = FallingBox.new(self)
         map[y][x] = Air.new(self)
+      elsif falling_box?
+        map[y][x] = Box.new(self)
       end
     end
 
@@ -295,7 +304,7 @@ module Tiles
 
     def move_horizontal(dx)
       if map[playery][playerx + dx + dx].air? &&
-         !map[playery + 1][playerx + dx].air?
+         !map[playery + 1][playerx + dx].air? && box?
         map[playery][playerx + dx + dx] = map[playery][playerx + dx]
         move_to_tile(playerx + dx, playery)
       end
@@ -330,7 +339,7 @@ module Tiles
       if map[y + 1][x].air?
         map[y + 1][x] = FallingBox.new(self)
         map[y][x] = Air.new(self)
-      else
+      elsif falling_box?
         map[y][x] = Box.new(self)
       end
     end
@@ -339,6 +348,11 @@ module Tiles
     end
 
     def move_horizontal(dx)
+      if map[playery][playerx + dx + dx].air? &&
+         !map[playery + 1][playerx + dx].air? && box?
+        map[playery][playerx + dx + dx] = map[playery][playerx + dx]
+        move_to_tile(playerx + dx, playery)
+      end
     end
 
     def draw(g, x, y)
