@@ -87,6 +87,12 @@ def move_vertical(dy)
 end
 
 def update_game
+  handle_inputs
+
+  update_map
+end
+
+def handle_inputs
   until @inputs.empty?
     current = @inputs.pop
     if current == INPUT[:LEFT]
@@ -99,7 +105,9 @@ def update_game
       move_vertical(1)
     end
   end
+end
 
+def update_map
   (0...@map.length).to_a.reverse_each do |y|
     (0...@map[y].length).each do |x|
       if (@map[y][x] == TILE[:STONE] || @map[y][x] == TILE[:FALLING_STONE]) &&
