@@ -226,24 +226,28 @@ class Main
   def draw_map(g)
     (0...@map.length).each do |y|
       (0...@map[y].length).each do |x|
-        if @map[y][x] == TILE[:FLUX]
-          g.fill_style = "#ccffcc"
-        elsif @map[y][x] == TILE[:UNBREAKABLE]
-          g.fill_style = "#999999"
-        elsif @map[y][x] == TILE[:STONE] || @map[y][x] == TILE[:FALLING_STONE]
-          g.fill_style = "#0000cc"
-        elsif @map[y][x] == TILE[:BOX] || @map[y][x] == TILE[:FALLING_BOX]
-          g.fill_style = "#8b4513"
-        elsif @map[y][x] == TILE[:KEY1] || @map[y][x] == TILE[:LOCK1]
-          g.fill_style = "#ffcc00"
-        elsif @map[y][x] == TILE[:KEY2] || @map[y][x] == TILE[:LOCK2]
-          g.fill_style = "#00ccff"
-        end
+        color_of_tile(g, x, y)
 
         if @map[y][x] != TILE[:AIR] && @map[y][x] != TILE[:PLAYER]
           g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
         end
       end
+    end
+  end
+
+  def color_of_tile(g, x, y)
+    if @map[y][x] == TILE[:FLUX]
+      g.fill_style = "#ccffcc"
+    elsif @map[y][x] == TILE[:UNBREAKABLE]
+      g.fill_style = "#999999"
+    elsif @map[y][x] == TILE[:STONE] || @map[y][x] == TILE[:FALLING_STONE]
+      g.fill_style = "#0000cc"
+    elsif @map[y][x] == TILE[:BOX] || @map[y][x] == TILE[:FALLING_BOX]
+      g.fill_style = "#8b4513"
+    elsif @map[y][x] == TILE[:KEY1] || @map[y][x] == TILE[:LOCK1]
+      g.fill_style = "#ffcc00"
+    elsif @map[y][x] == TILE[:KEY2] || @map[y][x] == TILE[:LOCK2]
+      g.fill_style = "#00ccff"
     end
   end
 
