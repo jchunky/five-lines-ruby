@@ -238,8 +238,8 @@ module Tiles
     def flux? = false
     def unbreakable? = false
     def player? = false
-    def stone? = !@falling
-    def falling_stone? = @falling
+    def stone? = @falling_state == :resting
+    def falling_stone? = @falling_state == :falling
     def box? = false
     def falling_box? = false
     def key1? = false
@@ -290,8 +290,8 @@ module Tiles
     def player? = false
     def stone? = false
     def falling_stone? = false
-    def box? = !@falling
-    def falling_box? = @falling
+    def box? = @falling_state == :resting
+    def falling_box? = @falling_state == :falling
     def key1? = false
     def lock1? = false
     def key2? = false
