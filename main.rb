@@ -120,12 +120,16 @@ def update_game
 end
 
 def draw
-  canvas = @document.get_element_by_id("GameCanvas")
-  g = canvas.get_context("2d")
-
-  g.clear_rect(0, 0, canvas.width, canvas.height)
+  g = create_graphics
   draw_map(g)
   draw_player(g)
+end
+
+def create_graphics
+  canvas = @document.get_element_by_id("GameCanvas")
+  g = canvas.get_context("2d")
+  g.clear_rect(0, 0, canvas.width, canvas.height)
+  g
 end
 
 def draw_map(g)
