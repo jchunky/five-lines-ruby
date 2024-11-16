@@ -200,17 +200,17 @@ module Tiles
 
   class Stone < SimpleDelegator
     include Config
-    def initialize(delegate, falling)
+    def initialize(delegate, falling_state)
       super(delegate)
-      @falling = falling
+      @falling_state = falling_state
     end
 
     def update(x, y)
       if map[y + 1][x].air?
-        map[y + 1][x] = Stone.new(self, true)
+        map[y + 1][x] = Stone.new(self, :falling)
         map[y][x] = Air.new(self)
-      elsif @falling
-        map[y][x] = Stone.new(self, false)
+      elsif @falling_state == :falling
+        map[y][x] = Stone.new(self, :resting)
       end
     end
 
@@ -219,7 +219,7 @@ module Tiles
 
     def move_horizontal(dx)
       if map[playery][playerx + dx + dx].air? &&
-         !map[playery + 1][playerx + dx].air? && !@falling
+         !map[playery + 1][playerx + dx].air? && @falling_state == :resting
         map[playery][playerx + dx + dx] = map[playery][playerx + dx]
         move_to_tile(playerx + dx, playery)
       end
@@ -250,17 +250,17 @@ module Tiles
 
   class Box < SimpleDelegator
     include Config
-    def initialize(delegate, falling)
+    def initialize(delegate, falling_state)
       super(delegate)
-      @falling = falling
+      @falling_state = falling_state
     end
 
     def update(x, y)
       if map[y + 1][x].air?
-        map[y + 1][x] = Box.new(self, true)
+        map[y + 1][x] = Box.new(self, :falling)
         map[y][x] = Air.new(self)
-      elsif @falling
-        map[y][x] = Box.new(self, false)
+      elsif @falling_state == :falling
+        map[y][x] = Box.new(self, :resting)
       end
     end
 
@@ -269,7 +269,7 @@ module Tiles
 
     def move_horizontal(dx)
       if map[playery][playerx + dx + dx].air? &&
-         !map[playery + 1][playerx + dx].air? && !@falling
+         !map[playery + 1][playerx + dx].air? && @falling_state == :resting
         map[playery][playerx + dx + dx] = map[playery][playerx + dx]
         move_to_tile(playerx + dx, playery)
       end
@@ -542,10 +542,10 @@ class Main
     when TILE[:FLUX] then Flux.new(self)
     when TILE[:UNBREAKABLE] then Unbreakable.new(self)
     when TILE[:PLAYER] then Player.new(self)
-    when TILE[:STONE] then Stone.new(self, false)
-    when TILE[:FALLING_STONE] then Stone.new(self, true)
-    when TILE[:BOX] then Box.new(self, false)
-    when TILE[:FALLING_BOX] then Box.new(self, true)
+    when TILE[:STONE] then Stone.new(self, :resting)
+    when TILE[:FALLING_STONE] then Stone.new(self, :falling)
+    when TILE[:BOX] then Box.new(self, :resting)
+    when TILE[:FALLING_BOX] then Box.new(self, :falling)
     when TILE[:KEY1] then Key1.new(self)
     when TILE[:LOCK1] then Lock1.new(self)
     when TILE[:KEY2] then Key2.new(self)
