@@ -69,6 +69,9 @@ class Main
   end
 
   class Air < SimpleDelegator
+    def color(g)
+    end
+
     def air? = true
     def flux? = false
     def unbreakable? = false
@@ -84,6 +87,10 @@ class Main
   end
 
   class Flux < SimpleDelegator
+    def color(g)
+      g.fill_style = "#ccffcc"
+    end
+
     def air? = false
     def flux? = true
     def unbreakable? = false
@@ -99,6 +106,10 @@ class Main
   end
 
   class Unbreakable < SimpleDelegator
+    def color(g)
+      g.fill_style = "#999999"
+    end
+
     def air? = false
     def flux? = false
     def unbreakable? = true
@@ -114,6 +125,9 @@ class Main
   end
 
   class Player < SimpleDelegator
+    def color(g)
+    end
+
     def air? = false
     def flux? = false
     def unbreakable? = false
@@ -129,6 +143,10 @@ class Main
   end
 
   class Stone < SimpleDelegator
+    def color(g)
+      g.fill_style = "#0000cc"
+    end
+
     def air? = false
     def flux? = false
     def unbreakable? = false
@@ -144,6 +162,10 @@ class Main
   end
 
   class FallingStone < SimpleDelegator
+    def color(g)
+      g.fill_style = "#0000cc"
+    end
+
     def air? = false
     def flux? = false
     def unbreakable? = false
@@ -159,6 +181,10 @@ class Main
   end
 
   class Box < SimpleDelegator
+    def color(g)
+      g.fill_style = "#8b4513"
+    end
+
     def air? = false
     def flux? = false
     def unbreakable? = false
@@ -174,6 +200,10 @@ class Main
   end
 
   class FallingBox < SimpleDelegator
+    def color(g)
+      g.fill_style = "#8b4513"
+    end
+
     def air? = false
     def flux? = false
     def unbreakable? = false
@@ -189,6 +219,10 @@ class Main
   end
 
   class Key1 < SimpleDelegator
+    def color(g)
+      g.fill_style = "#ffcc00"
+    end
+
     def air? = false
     def flux? = false
     def unbreakable? = false
@@ -204,6 +238,10 @@ class Main
   end
 
   class Lock1 < SimpleDelegator
+    def color(g)
+      g.fill_style = "#ffcc00"
+    end
+
     def air? = false
     def flux? = false
     def unbreakable? = false
@@ -219,6 +257,10 @@ class Main
   end
 
   class Key2 < SimpleDelegator
+    def color(g)
+      g.fill_style = "#00ccff"
+    end
+
     def air? = false
     def flux? = false
     def unbreakable? = false
@@ -234,6 +276,10 @@ class Main
   end
 
   class Lock2 < SimpleDelegator
+    def color(g)
+      g.fill_style = "#00ccff"
+    end
+
     def air? = false
     def flux? = false
     def unbreakable? = false
@@ -452,19 +498,7 @@ class Main
   end
 
   def color_of_tile(g, x, y)
-    if @map[y][x].flux?
-      g.fill_style = "#ccffcc"
-    elsif @map[y][x].unbreakable?
-      g.fill_style = "#999999"
-    elsif @map[y][x].stone? || @map[y][x].falling_stone?
-      g.fill_style = "#0000cc"
-    elsif @map[y][x].box? || @map[y][x].falling_box?
-      g.fill_style = "#8b4513"
-    elsif @map[y][x].key1? || @map[y][x].lock1?
-      g.fill_style = "#ffcc00"
-    elsif @map[y][x].key2? || @map[y][x].lock2?
-      g.fill_style = "#00ccff"
-    end
+    @map[y][x].color(g)
   end
 
   def draw_player(g)
