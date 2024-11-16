@@ -60,17 +60,23 @@ class Main
 
   class Up < SimpleDelegator
     def handle_input
-      move_vertical(-1)
+      dy = -1
+      map[playery + dy][playerx].move_vertical(dy)
     end
   end
 
   class Down < SimpleDelegator
     def handle_input
-      move_vertical(1)
+      dy = 1
+      map[playery + dy][playerx].move_vertical(dy)
     end
   end
 
   class Air < SimpleDelegator
+    def move_vertical(dy)
+      move_to_tile(playerx, playery + dy)
+    end
+
     def move_horizontal(dx)
       move_to_tile(playerx + dx, playery)
     end
@@ -95,6 +101,10 @@ class Main
   end
 
   class Flux < SimpleDelegator
+    def move_vertical(dy)
+      move_to_tile(playerx, playery + dy)
+    end
+
     def move_horizontal(dx)
       move_to_tile(playerx + dx, playery)
     end
@@ -121,6 +131,9 @@ class Main
   end
 
   class Unbreakable < SimpleDelegator
+    def move_vertical(dy)
+    end
+
     def move_horizontal(dx)
     end
 
@@ -146,6 +159,9 @@ class Main
   end
 
   class Player < SimpleDelegator
+    def move_vertical(dy)
+    end
+
     def move_horizontal(dx)
     end
 
@@ -169,6 +185,9 @@ class Main
   end
 
   class Stone < SimpleDelegator
+    def move_vertical(dy)
+    end
+
     def move_horizontal(dx)
       if map[playery][playerx + dx + dx].air? &&
          !map[playery + 1][playerx + dx].air?
@@ -199,6 +218,9 @@ class Main
   end
 
   class FallingStone < SimpleDelegator
+    def move_vertical(dy)
+    end
+
     def move_horizontal(dx)
     end
 
@@ -224,6 +246,9 @@ class Main
   end
 
   class Box < SimpleDelegator
+    def move_vertical(dy)
+    end
+
     def move_horizontal(dx)
       if map[playery][playerx + dx + dx].air? &&
          !map[playery + 1][playerx + dx].air?
@@ -254,6 +279,9 @@ class Main
   end
 
   class FallingBox < SimpleDelegator
+    def move_vertical(dy)
+    end
+
     def move_horizontal(dx)
     end
 
@@ -279,6 +307,11 @@ class Main
   end
 
   class Key1 < SimpleDelegator
+    def move_vertical(dy)
+      remove_lock1
+      move_to_tile(playerx, playery + dy)
+    end
+
     def move_horizontal(dx)
       remove_lock1
       move_to_tile(playerx + dx, playery)
@@ -306,6 +339,9 @@ class Main
   end
 
   class Lock1 < SimpleDelegator
+    def move_vertical(dy)
+    end
+
     def move_horizontal(dx)
     end
 
@@ -331,6 +367,11 @@ class Main
   end
 
   class Key2 < SimpleDelegator
+    def move_vertical(dy)
+      remove_lock2
+      move_to_tile(playerx, playery + dy)
+    end
+
     def move_horizontal(dx)
       remove_lock2
       move_to_tile(playerx + dx, playery)
@@ -358,6 +399,9 @@ class Main
   end
 
   class Lock2 < SimpleDelegator
+    def move_vertical(dy)
+    end
+
     def move_horizontal(dx)
     end
 
@@ -494,19 +538,6 @@ class Main
     @map[newy][newx] = Player.new(self)
     @playerx = newx
     @playery = newy
-  end
-
-  def move_vertical(dy)
-    if map[playery + dy][playerx].flux? ||
-       map[playery + dy][playerx].air?
-      move_to_tile(playerx, playery + dy)
-    elsif map[playery + dy][playerx].key1?
-      remove_lock1
-      move_to_tile(playerx, playery + dy)
-    elsif map[playery + dy][playerx].key2?
-      remove_lock2
-      move_to_tile(playerx, playery + dy)
-    end
   end
 
   def update_game
