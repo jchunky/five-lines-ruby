@@ -64,8 +64,7 @@ module FallingStates
     def falling? = true
     def resting? = false
 
-    def move_horizontal(dx)
-    end
+    def move_horizontal(dx) = nil
   end
 
   class Resting < SimpleDelegator
@@ -101,14 +100,26 @@ class FallStrategy < SimpleDelegator
   def falling? = @falling_state.falling?
 end
 
+class Tile < SimpleDelegator
+  include Config
+
+  def update(x, y) = nil
+  def move_vertical(dy) = nil
+  def move_horizontal(dx) = nil
+  def draw(g, x, y) = nil
+  def drop = nil
+  def rest = nil
+
+  def falling? = false
+  def air? = false
+  def lock1? = false
+  def lock2? = false
+end
+
 module Tiles
   include Config
 
-  class Air < SimpleDelegator
-    include Config
-    def update(x, y)
-    end
-
+  class Air < Tile
     def move_vertical(dy)
       move_to_tile(playerx, playery + dy)
     end
@@ -117,22 +128,10 @@ module Tiles
       move_to_tile(playerx + dx, playery)
     end
 
-    def draw(g, x, y)
-    end
-
-    def falling? = false
-    def drop = nil
-    def rest = nil
     def air? = true
-    def lock1? = false
-    def lock2? = false
   end
 
-  class Flux < SimpleDelegator
-    include Config
-    def update(x, y)
-    end
-
+  class Flux < Tile
     def move_vertical(dy)
       move_to_tile(playerx, playery + dy)
     end
@@ -145,63 +144,19 @@ module Tiles
       g.fill_style = "#ccffcc"
       g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
     end
-
-    def falling? = false
-    def drop = nil
-    def rest = nil
-    def air? = false
-    def lock1? = false
-    def lock2? = false
   end
 
-  class Unbreakable < SimpleDelegator
-    include Config
-    def update(x, y)
-    end
-
-    def move_vertical(dy)
-    end
-
-    def move_horizontal(dx)
-    end
-
+  class Unbreakable < Tile
     def draw(g, x, y)
       g.fill_style = "#999999"
       g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
     end
-
-    def falling? = false
-    def drop = nil
-    def rest = nil
-    def air? = false
-    def lock1? = false
-    def lock2? = false
   end
 
-  class Player < SimpleDelegator
-    include Config
-    def update(x, y)
-    end
-
-    def move_vertical(dy)
-    end
-
-    def move_horizontal(dx)
-    end
-
-    def draw(g, x, y)
-    end
-
-    def falling? = false
-    def drop = nil
-    def rest = nil
-    def air? = false
-    def lock1? = false
-    def lock2? = false
+  class Player < Tile
   end
 
-  class Stone < SimpleDelegator
-    include Config
+  class Stone < Tile
     attr_reader :falling_state
 
     def initialize(delegate, falling_state)
@@ -212,9 +167,6 @@ module Tiles
 
     def update(x, y)
       @fall_strategy.update(self, x, y)
-    end
-
-    def move_vertical(dy)
     end
 
     def move_horizontal(dx)
@@ -229,13 +181,9 @@ module Tiles
     def falling? = @falling_state.falling?
     def drop = @falling_state = FallingStates::Falling.new(self)
     def rest = @falling_state = FallingStates::Resting.new(self)
-    def air? = false
-    def lock1? = false
-    def lock2? = false
   end
 
-  class Box < SimpleDelegator
-    include Config
+  class Box < Tile
     attr_reader :falling_state
 
     def initialize(delegate, falling_state)
@@ -246,9 +194,6 @@ module Tiles
 
     def update(x, y)
       @fall_strategy.update(self, x, y)
-    end
-
-    def move_vertical(dy)
     end
 
     def move_horizontal(dx)
@@ -263,16 +208,9 @@ module Tiles
     def falling? = @falling_state.falling?
     def drop = @falling_state = FallingStates::Falling.new(self)
     def rest = @falling_state = FallingStates::Resting.new(self)
-    def air? = false
-    def lock1? = false
-    def lock2? = false
   end
 
-  class Key1 < SimpleDelegator
-    include Config
-    def update(x, y)
-    end
-
+  class Key1 < Tile
     def move_vertical(dy)
       remove_lock1
       move_to_tile(playerx, playery + dy)
@@ -287,44 +225,18 @@ module Tiles
       g.fill_style = "#ffcc00"
       g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
     end
-
-    def falling? = false
-    def drop = nil
-    def rest = nil
-    def air? = false
-    def lock1? = false
-    def lock2? = false
   end
 
-  class Lock1 < SimpleDelegator
-    include Config
-    def update(x, y)
-    end
-
-    def move_vertical(dy)
-    end
-
-    def move_horizontal(dx)
-    end
-
+  class Lock1 < Tile
     def draw(g, x, y)
       g.fill_style = "#ffcc00"
       g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
     end
 
-    def falling? = false
-    def drop = nil
-    def rest = nil
-    def air? = false
     def lock1? = true
-    def lock2? = false
   end
 
-  class Key2 < SimpleDelegator
-    include Config
-    def update(x, y)
-    end
-
+  class Key2 < Tile
     def move_vertical(dy)
       remove_lock2
       move_to_tile(playerx, playery + dy)
@@ -339,36 +251,14 @@ module Tiles
       g.fill_style = "#00ccff"
       g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
     end
-
-    def falling? = false
-    def drop = nil
-    def rest = nil
-    def air? = false
-    def lock1? = false
-    def lock2? = false
   end
 
-  class Lock2 < SimpleDelegator
-    include Config
-    def update(x, y)
-    end
-
-    def move_vertical(dy)
-    end
-
-    def move_horizontal(dx)
-    end
-
+  class Lock2 < Tile
     def draw(g, x, y)
       g.fill_style = "#00ccff"
       g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
     end
 
-    def falling? = false
-    def drop = nil
-    def rest = nil
-    def air? = false
-    def lock1? = false
     def lock2? = true
   end
 end
