@@ -32,31 +32,19 @@ end
 
 module Input
   class Left
-    def handle_input
-      dx = -1
-      $map[$playery][$playerx + dx].move_horizontal(dx)
-    end
+    def handle_input = $map[$playery][$playerx + -1].move_horizontal(-1)
   end
 
   class Right
-    def handle_input
-      dx = 1
-      $map[$playery][$playerx + dx].move_horizontal(dx)
-    end
+    def handle_input = $map[$playery][$playerx + 1].move_horizontal(1)
   end
 
   class Up
-    def handle_input
-      dy = -1
-      $map[$playery + dy][$playerx].move_vertical(dy)
-    end
+    def handle_input = $map[$playery + -1][$playerx].move_vertical(-1)
   end
 
   class Down
-    def handle_input
-      dy = 1
-      $map[$playery + dy][$playerx].move_vertical(dy)
-    end
+    def handle_input = $map[$playery + 1][$playerx].move_vertical(1)
   end
 end
 
