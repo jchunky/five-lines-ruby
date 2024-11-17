@@ -123,21 +123,8 @@ module Tiles
     def falling? = false
     def drop = nil
     def rest = nil
-    def stony? = false
-    def boxy? = false
-    def edible? = true
-    def pushable? = false
     def air? = true
-    def flux? = false
-    def unbreakable? = false
-    def player? = false
-    def stone? = false
-    def falling_stone? = false
-    def box? = false
-    def falling_box? = false
-    def key1? = false
     def lock1? = false
-    def key2? = false
     def lock2? = false
   end
 
@@ -162,21 +149,8 @@ module Tiles
     def falling? = false
     def drop = nil
     def rest = nil
-    def stony? = false
-    def boxy? = false
-    def edible? = true
-    def pushable? = false
     def air? = false
-    def flux? = true
-    def unbreakable? = false
-    def player? = false
-    def stone? = false
-    def falling_stone? = false
-    def box? = false
-    def falling_box? = false
-    def key1? = false
     def lock1? = false
-    def key2? = false
     def lock2? = false
   end
 
@@ -199,21 +173,8 @@ module Tiles
     def falling? = false
     def drop = nil
     def rest = nil
-    def stony? = false
-    def boxy? = false
-    def edible? = false
-    def pushable? = false
     def air? = false
-    def flux? = false
-    def unbreakable? = true
-    def player? = false
-    def stone? = false
-    def falling_stone? = false
-    def box? = false
-    def falling_box? = false
-    def key1? = false
     def lock1? = false
-    def key2? = false
     def lock2? = false
   end
 
@@ -234,21 +195,8 @@ module Tiles
     def falling? = false
     def drop = nil
     def rest = nil
-    def stony? = false
-    def boxy? = false
-    def edible? = false
-    def pushable? = false
     def air? = false
-    def flux? = false
-    def unbreakable? = false
-    def player? = true
-    def stone? = false
-    def falling_stone? = false
-    def box? = false
-    def falling_box? = false
-    def key1? = false
     def lock1? = false
-    def key2? = false
     def lock2? = false
   end
 
@@ -281,21 +229,8 @@ module Tiles
     def falling? = @falling_state.falling?
     def drop = @falling_state = FallingStates::Falling.new(self)
     def rest = @falling_state = FallingStates::Resting.new(self)
-    def stony? = true
-    def boxy? = false
-    def edible? = false
-    def pushable? = true
     def air? = false
-    def flux? = false
-    def unbreakable? = false
-    def player? = false
-    def stone? = @falling_state.resting?
-    def falling_stone? = @falling_state.falling?
-    def box? = false
-    def falling_box? = false
-    def key1? = false
     def lock1? = false
-    def key2? = false
     def lock2? = false
   end
 
@@ -328,21 +263,8 @@ module Tiles
     def falling? = @falling_state.falling?
     def drop = @falling_state = FallingStates::Falling.new(self)
     def rest = @falling_state = FallingStates::Resting.new(self)
-    def stony? = false
-    def boxy? = true
-    def edible? = false
-    def pushable? = true
     def air? = false
-    def flux? = false
-    def unbreakable? = false
-    def player? = false
-    def stone? = false
-    def falling_stone? = false
-    def box? = @falling_state.resting?
-    def falling_box? = @falling_state.falling?
-    def key1? = false
     def lock1? = false
-    def key2? = false
     def lock2? = false
   end
 
@@ -369,21 +291,8 @@ module Tiles
     def falling? = false
     def drop = nil
     def rest = nil
-    def stony? = false
-    def boxy? = false
-    def edible? = false
-    def pushable? = false
     def air? = false
-    def flux? = false
-    def unbreakable? = false
-    def player? = false
-    def stone? = false
-    def falling_stone? = false
-    def box? = false
-    def falling_box? = false
-    def key1? = true
     def lock1? = false
-    def key2? = false
     def lock2? = false
   end
 
@@ -406,21 +315,8 @@ module Tiles
     def falling? = false
     def drop = nil
     def rest = nil
-    def stony? = false
-    def boxy? = false
-    def edible? = false
-    def pushable? = false
     def air? = false
-    def flux? = false
-    def unbreakable? = false
-    def player? = false
-    def stone? = false
-    def falling_stone? = false
-    def box? = false
-    def falling_box? = false
-    def key1? = false
     def lock1? = true
-    def key2? = false
     def lock2? = false
   end
 
@@ -447,21 +343,8 @@ module Tiles
     def falling? = false
     def drop = nil
     def rest = nil
-    def stony? = false
-    def boxy? = false
-    def edible? = false
-    def pushable? = false
     def air? = false
-    def flux? = false
-    def unbreakable? = false
-    def player? = false
-    def stone? = false
-    def falling_stone? = false
-    def box? = false
-    def falling_box? = false
-    def key1? = false
     def lock1? = false
-    def key2? = true
     def lock2? = false
   end
 
@@ -484,21 +367,8 @@ module Tiles
     def falling? = false
     def drop = nil
     def rest = nil
-    def stony? = false
-    def boxy? = false
-    def edible? = false
-    def pushable? = false
     def air? = false
-    def flux? = false
-    def unbreakable? = false
-    def player? = false
-    def stone? = false
-    def falling_stone? = false
-    def box? = false
-    def falling_box? = false
-    def key1? = false
     def lock1? = false
-    def key2? = false
     def lock2? = true
   end
 end
