@@ -241,7 +241,7 @@ module Tiles
     end
 
     def move_horizontal(dx)
-      @falling_state.move_horizontal(map[playery][playerx + dx], dx)
+      @falling_state.move_horizontal(self, dx)
     end
 
     def draw(g, x, y)
@@ -287,7 +287,7 @@ module Tiles
     end
 
     def move_horizontal(dx)
-      @falling_state.move_horizontal(map[playery][playerx + dx], dx)
+      @falling_state.move_horizontal(self, dx)
     end
 
     def draw(g, x, y)
