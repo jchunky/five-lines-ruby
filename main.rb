@@ -63,11 +63,22 @@ module FallingStates
   class Falling < SimpleDelegator
     def falling? = true
     def resting? = false
+
+    def move_horizontal(dx)
+    end
   end
 
   class Resting < SimpleDelegator
     def falling? = false
     def resting? = true
+
+    def move_horizontal(tile, dx)
+      if map[playery][playerx + dx + dx].air? &&
+         !map[playery + 1][playerx + dx].air?
+        map[playery][playerx + dx + dx] = tile
+        move_to_tile(playerx + dx, playery)
+      end
+    end
   end
 end
 
@@ -230,11 +241,7 @@ module Tiles
     end
 
     def move_horizontal(dx)
-      if map[playery][playerx + dx + dx].air? &&
-         !map[playery + 1][playerx + dx].air? && @falling_state.resting?
-        map[playery][playerx + dx + dx] = map[playery][playerx + dx]
-        move_to_tile(playerx + dx, playery)
-      end
+      @falling_state.move_horizontal(map[playery][playerx + dx], dx)
     end
 
     def draw(g, x, y)
@@ -280,11 +287,7 @@ module Tiles
     end
 
     def move_horizontal(dx)
-      if map[playery][playerx + dx + dx].air? &&
-         !map[playery + 1][playerx + dx].air? && @falling_state.resting?
-        map[playery][playerx + dx + dx] = map[playery][playerx + dx]
-        move_to_tile(playerx + dx, playery)
-      end
+      @falling_state.move_horizontal(map[playery][playerx + dx], dx)
     end
 
     def draw(g, x, y)
