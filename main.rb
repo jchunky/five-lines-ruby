@@ -31,8 +31,6 @@ module Config
 end
 
 module Input
-  include Config
-
   class Left
     def handle_input
       dx = -1
@@ -67,7 +65,7 @@ module FallingStates
     def falling? = true
     def resting? = false
 
-    def move_horizontal(dx) = nil
+    def move_horizontal(tile, dx) = nil
   end
 
   class Resting
@@ -119,8 +117,6 @@ class Tile
 end
 
 module Tiles
-  include Config
-
   class Air < Tile
     def move_vertical(dy)
       move_to_tile($playerx, $playery + dy)
@@ -171,7 +167,7 @@ module Tiles
     end
 
     def move_horizontal(dx)
-      @falling_state.move_horizontal(dx)
+      @falling_state.move_horizontal(self, dx)
     end
 
     def draw(g, x, y)
@@ -197,7 +193,7 @@ module Tiles
     end
 
     def move_horizontal(dx)
-      @falling_state.move_horizontal(dx)
+      @falling_state.move_horizontal(self, dx)
     end
 
     def draw(g, x, y)
@@ -279,33 +275,6 @@ class GraphicsObject
   def fill_rect(x, y, width, height)
     Rectangle.new(x: x, y: y, width: width, height: height, color: @fill_style)
   end
-end
-
-def remove_lock1
-  (0...$map.length).each do |y|
-    (0...$map[y].length).each do |x|
-      if $map[y][x].lock1?
-        $map[y][x] = Tiles::Air.new
-      end
-    end
-  end
-end
-
-def remove_lock2
-  (0...$map.length).each do |y|
-    (0...$map[y].length).each do |x|
-      if $map[y][x].lock2?
-        $map[y][x] = Tiles::Air.new
-      end
-    end
-  end
-end
-
-def move_to_tile(newx, newy)
-  $map[$playery][$playerx] = Tiles::Air.new
-  $map[newy][newx] = Tiles::Player.new
-  $playerx = newx
-  $playery = newy
 end
 
 class Main
@@ -446,6 +415,33 @@ class Main
     update_game
     draw
   end
+end
+
+def remove_lock1
+  (0...$map.length).each do |y|
+    (0...$map[y].length).each do |x|
+      if $map[y][x].lock1?
+        $map[y][x] = Tiles::Air.new
+      end
+    end
+  end
+end
+
+def remove_lock2
+  (0...$map.length).each do |y|
+    (0...$map[y].length).each do |x|
+      if $map[y][x].lock2?
+        $map[y][x] = Tiles::Air.new
+      end
+    end
+  end
+end
+
+def move_to_tile(newx, newy)
+  $map[$playery][$playerx] = Tiles::Air.new
+  $map[newy][newx] = Tiles::Player.new
+  $playerx = newx
+  $playery = newy
 end
 
 Main.new.run
