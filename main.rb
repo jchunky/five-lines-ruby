@@ -242,11 +242,11 @@ module Tiles
 
     def update(x, y)
       if map[y + 1][x].air?
-        map[y][x].drop
-        map[y + 1][x] = map[y][x]
+        drop
+        map[y + 1][x] = self
         map[y][x] = Air.new(self)
       elsif @falling_state.falling?
-        map[y][x].rest
+        rest
       end
     end
 
@@ -292,11 +292,11 @@ module Tiles
 
     def update(x, y)
       if map[y + 1][x].air?
-        map[y][x].drop
-        map[y + 1][x] = map[y][x]
+        drop
+        map[y + 1][x] = self
         map[y][x] = Air.new(self)
       elsif @falling_state.falling?
-        map[y][x].rest
+        rest
       end
     end
 
