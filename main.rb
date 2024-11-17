@@ -7,18 +7,18 @@ module Config
   SLEEP = 1000 / FPS
 
   TILE = {
-    AIR: 0,
-    FLUX: 1,
-    UNBREAKABLE: 2,
-    PLAYER: 3,
-    STONE: 4,
-    FALLING_STONE: 5,
-    BOX: 6,
-    FALLING_BOX: 7,
-    KEY1: 8,
-    LOCK1: 9,
-    KEY2: 10,
-    LOCK2: 11,
+    air: 0,
+    flux: 1,
+    unbreakable: 2,
+    player: 3,
+    stone: 4,
+    falling_stone: 5,
+    box: 6,
+    falling_box: 7,
+    key1: 8,
+    lock1: 9,
+    key2: 10,
+    lock2: 11,
   }
 
   LEFT_KEY = "left"
@@ -358,18 +358,18 @@ class Main
 
   def transform_tile(tile)
     case tile
-    when TILE[:AIR] then Air.new(self)
-    when TILE[:FLUX] then Flux.new(self)
-    when TILE[:UNBREAKABLE] then Unbreakable.new(self)
-    when TILE[:PLAYER] then Player.new(self)
-    when TILE[:STONE] then Stone.new(self, FallingStates::Resting.new(self))
-    when TILE[:FALLING_STONE] then Stone.new(self, FallingStates::Falling.new(self))
-    when TILE[:BOX] then Box.new(self, FallingStates::Resting.new(self))
-    when TILE[:FALLING_BOX] then Box.new(self, FallingStates::Falling.new(self))
-    when TILE[:KEY1] then Key1.new(self)
-    when TILE[:LOCK1] then Lock1.new(self)
-    when TILE[:KEY2] then Key2.new(self)
-    when TILE[:LOCK2] then Lock2.new(self)
+    when TILE[:air] then Air.new(self)
+    when TILE[:flux] then Flux.new(self)
+    when TILE[:unbreakable] then Unbreakable.new(self)
+    when TILE[:player] then Player.new(self)
+    when TILE[:stone] then Stone.new(self, FallingStates::Resting.new(self))
+    when TILE[:falling_stone] then Stone.new(self, FallingStates::Falling.new(self))
+    when TILE[:box] then Box.new(self, FallingStates::Resting.new(self))
+    when TILE[:falling_box] then Box.new(self, FallingStates::Falling.new(self))
+    when TILE[:key1] then Key1.new(self)
+    when TILE[:lock1] then Lock1.new(self)
+    when TILE[:key2] then Key2.new(self)
+    when TILE[:lock2] then Lock2.new(self)
     end
   end
 
