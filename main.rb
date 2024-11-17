@@ -56,12 +56,10 @@ class FallStrategy
   end
 
   def update(tile, x, y)
-    if $map[y + 1][x].air?
-      @falling_state = FallingStates::Falling.new
+    @falling_state = $map[y + 1][x].air? ? FallingStates::Falling.new : FallingStates::Resting.new
+    if @falling_state.falling?
       $map[y + 1][x] = tile
       $map[y][x] = Tiles::Air.new
-    elsif falling?
-      @falling_state = FallingStates::Resting.new
     end
   end
 
