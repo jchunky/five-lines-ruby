@@ -36,28 +36,28 @@ module Input
   class Left < SimpleDelegator
     def handle_input
       dx = -1
-      map[playery][playerx + dx].move_horizontal(dx)
+      $map[$playery][$playerx + dx].move_horizontal(dx)
     end
   end
 
   class Right < SimpleDelegator
     def handle_input
       dx = 1
-      map[playery][playerx + dx].move_horizontal(dx)
+      $map[$playery][$playerx + dx].move_horizontal(dx)
     end
   end
 
   class Up < SimpleDelegator
     def handle_input
       dy = -1
-      map[playery + dy][playerx].move_vertical(dy)
+      $map[$playery + dy][$playerx].move_vertical(dy)
     end
   end
 
   class Down < SimpleDelegator
     def handle_input
       dy = 1
-      map[playery + dy][playerx].move_vertical(dy)
+      $map[$playery + dy][$playerx].move_vertical(dy)
     end
   end
 end
@@ -75,10 +75,10 @@ module FallingStates
     def resting? = true
 
     def move_horizontal(tile, dx)
-      if map[playery][playerx + dx + dx].air? &&
-         !map[playery + 1][playerx + dx].air?
-        map[playery][playerx + dx + dx] = tile
-        move_to_tile(playerx + dx, playery)
+      if $map[$playery][$playerx + dx + dx].air? &&
+         !$map[$playery + 1][$playerx + dx].air?
+        $map[$playery][$playerx + dx + dx] = tile
+        move_to_tile($playerx + dx, playery)
       end
     end
   end
@@ -87,20 +87,20 @@ end
 class FallStrategy < SimpleDelegator
   def initialize(delegate, falling_state)
     super(delegate)
-    @falling_state = falling_state
+    $falling_state = falling_state
   end
 
   def update(tile, x, y)
-    if map[y + 1][x].air?
+    if $map[y + 1][x].air?
       tile.drop
-      map[y + 1][x] = tile
-      map[y][x] = Tiles::Air.new(tile)
+      $map[y + 1][x] = tile
+      $map[y][x] = Tiles::Air.new(tile)
     elsif falling?
       tile.rest
     end
   end
 
-  def falling? = @falling_state.falling?
+  def falling? = $falling_state.falling?
 end
 
 class Tile < SimpleDelegator
@@ -124,11 +124,11 @@ module Tiles
 
   class Air < Tile
     def move_vertical(dy)
-      move_to_tile(playerx, playery + dy)
+      move_to_tile($playerx, $playery + dy)
     end
 
     def move_horizontal(dx)
-      move_to_tile(playerx + dx, playery)
+      move_to_tile($playerx + dx, $playery)
     end
 
     def air? = true
@@ -136,11 +136,11 @@ module Tiles
 
   class Flux < Tile
     def move_vertical(dy)
-      move_to_tile(playerx, playery + dy)
+      move_to_tile($playerx, $playery + dy)
     end
 
     def move_horizontal(dx)
-      move_to_tile(playerx + dx, playery)
+      move_to_tile($playerx + dx, $playery)
     end
 
     def draw(g, x, y)
@@ -164,16 +164,16 @@ module Tiles
 
     def initialize(delegate, falling_state)
       super(delegate)
-      @falling_state = falling_state
-      @fall_strategy = FallStrategy.new(self, @falling_state)
+      $falling_state = falling_state
+      $fall_strategy = FallStrategy.new(self, $falling_state)
     end
 
     def update(x, y)
-      @fall_strategy.update(self, x, y)
+      $fall_strategy.update(self, x, y)
     end
 
     def move_horizontal(dx)
-      @falling_state.move_horizontal(self, dx)
+      $falling_state.move_horizontal(self, dx)
     end
 
     def draw(g, x, y)
@@ -181,9 +181,9 @@ module Tiles
       g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
     end
 
-    def falling? = @falling_state.falling?
-    def drop = @falling_state = FallingStates::Falling.new(self)
-    def rest = @falling_state = FallingStates::Resting.new(self)
+    def falling? = $falling_state.falling?
+    def drop = $falling_state = FallingStates::Falling.new(self)
+    def rest = $falling_state = FallingStates::Resting.new(self)
   end
 
   class Box < Tile
@@ -191,16 +191,16 @@ module Tiles
 
     def initialize(delegate, falling_state)
       super(delegate)
-      @falling_state = falling_state
-      @fall_strategy = FallStrategy.new(self, @falling_state)
+      $falling_state = falling_state
+      $fall_strategy = FallStrategy.new(self, $falling_state)
     end
 
     def update(x, y)
-      @fall_strategy.update(self, x, y)
+      $fall_strategy.update(self, x, y)
     end
 
     def move_horizontal(dx)
-      @falling_state.move_horizontal(self, dx)
+      $falling_state.move_horizontal(self, dx)
     end
 
     def draw(g, x, y)
@@ -208,20 +208,20 @@ module Tiles
       g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
     end
 
-    def falling? = @falling_state.falling?
-    def drop = @falling_state = FallingStates::Falling.new(self)
-    def rest = @falling_state = FallingStates::Resting.new(self)
+    def falling? = $falling_state.falling?
+    def drop = $falling_state = FallingStates::Falling.new(self)
+    def rest = $falling_state = FallingStates::Resting.new(self)
   end
 
   class Key1 < Tile
     def move_vertical(dy)
       remove_lock1
-      move_to_tile(playerx, playery + dy)
+      move_to_tile($playerx, $playery + dy)
     end
 
     def move_horizontal(dx)
       remove_lock1
-      move_to_tile(playerx + dx, playery)
+      move_to_tile($playerx + dx, $playery)
     end
 
     def draw(g, x, y)
@@ -242,12 +242,12 @@ module Tiles
   class Key2 < Tile
     def move_vertical(dy)
       remove_lock2
-      move_to_tile(playerx, playery + dy)
+      move_to_tile($playerx, $playery + dy)
     end
 
     def move_horizontal(dx)
       remove_lock2
-      move_to_tile(playerx + dx, playery)
+      move_to_tile($playerx + dx, $playery)
     end
 
     def draw(g, x, y)
@@ -289,13 +289,11 @@ class Main
   include Input
   include Tiles
 
-  attr_accessor :map, :playerx, :playery
-
   def run
-    @playerx = 1
-    @playery = 1
+    $playerx = 1
+    $playery = 1
 
-    @map = [
+    $map = [
       [2, 2, 2, 2, 2, 2, 2, 2],
       [2, 3, 0, 1, 1, 2, 0, 2],
       [2, 4, 2, 6, 1, 2, 0, 2],
@@ -305,7 +303,7 @@ class Main
     ]
     transform_map
 
-    @inputs = []
+    $inputs = []
 
     # ruby2d call to run the game_loop
     Window.update do
@@ -315,21 +313,21 @@ class Main
     Window.on :key_down do |e|
       case e.key
       when KEY[:left], "a"
-        @inputs.push(Left.new(self))
+        $inputs.push(Left.new(self))
       when KEY[:up], "w"
-        @inputs.push(Up.new(self))
+        $inputs.push(Up.new(self))
       when KEY[:right], "d"
-        @inputs.push(Right.new(self))
+        $inputs.push(Right.new(self))
       when KEY[:down], "s"
-        @inputs.push(Down.new(self))
+        $inputs.push(Down.new(self))
       when KEY[:escape]
         Window.close
       end
     end
 
-    @document = Object.new
+    $document = Object.new
 
-    def @document.get_element_by_id(id)
+    def $document.get_element_by_id(id)
       canvas = Object.new
 
       def canvas.get_context(context)
@@ -352,9 +350,9 @@ class Main
   end
 
   def transform_map
-    @map.count.times do |y|
-      @map.first.count.times do |x|
-        @map[y][x] = transform_tile(@map[y][x])
+    $map.count.times do |y|
+      $map.first.count.times do |x|
+        $map[y][x] = transform_tile($map[y][x])
       end
     end
   end
@@ -377,30 +375,30 @@ class Main
   end
 
   def remove_lock1
-    (0...@map.length).each do |y|
-      (0...@map[y].length).each do |x|
-        if @map[y][x].lock1?
-          @map[y][x] = Air.new(self)
+    (0...$map.length).each do |y|
+      (0...$map[y].length).each do |x|
+        if $map[y][x].lock1?
+          $map[y][x] = Air.new(self)
         end
       end
     end
   end
 
   def remove_lock2
-    (0...@map.length).each do |y|
-      (0...@map[y].length).each do |x|
-        if @map[y][x].lock2?
-          @map[y][x] = Air.new(self)
+    (0...$map.length).each do |y|
+      (0...$map[y].length).each do |x|
+        if $map[y][x].lock2?
+          $map[y][x] = Air.new(self)
         end
       end
     end
   end
 
   def move_to_tile(newx, newy)
-    @map[@playery][@playerx] = Air.new(self)
-    @map[newy][newx] = Player.new(self)
-    @playerx = newx
-    @playery = newy
+    $map[$playery][$playerx] = Air.new(self)
+    $map[newy][newx] = Player.new(self)
+    $playerx = newx
+    $playery = newy
   end
 
   def update_game
@@ -410,13 +408,13 @@ class Main
   end
 
   def handle_inputs
-    @inputs.pop.handle_input until @inputs.empty?
+    $inputs.pop.handle_input until $inputs.empty?
   end
 
   def update_map
-    (0...@map.length).to_a.reverse_each do |y|
-      (0...@map[y].length).each do |x|
-        map[y][x].update(x, y)
+    (0...$map.length).to_a.reverse_each do |y|
+      (0...$map[y].length).each do |x|
+        $map[y][x].update(x, y)
       end
     end
   end
@@ -428,23 +426,23 @@ class Main
   end
 
   def create_graphics
-    canvas = @document.get_element_by_id("GameCanvas")
+    canvas = $document.get_element_by_id("GameCanvas")
     g = canvas.get_context("2d")
     g.clear_rect(0, 0, canvas.width, canvas.height)
     g
   end
 
   def draw_map(g)
-    (0...@map.length).each do |y|
-      (0...@map[y].length).each do |x|
-        @map[y][x].draw(g, x, y)
+    (0...$map.length).each do |y|
+      (0...$map[y].length).each do |x|
+        $map[y][x].draw(g, x, y)
       end
     end
   end
 
   def draw_player(g)
     g.fill_style = "#ff0000"
-    g.fill_rect(@playerx * TILE_SIZE, @playery * TILE_SIZE, TILE_SIZE, TILE_SIZE)
+    g.fill_rect($playerx * TILE_SIZE, $playery * TILE_SIZE, TILE_SIZE, TILE_SIZE)
   end
 
   def game_loop
