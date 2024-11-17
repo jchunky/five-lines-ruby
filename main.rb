@@ -21,10 +21,12 @@ module Config
     lock2: 11,
   }
 
-  LEFT_KEY = "left"
-  UP_KEY = "up"
-  RIGHT_KEY = "right"
-  DOWN_KEY = "down"
+  KEY = {
+    left: "left",
+    up: "up",
+    right: "right",
+    down: "down",
+  }
 end
 
 module Input
@@ -311,13 +313,13 @@ class Main
 
     Window.on :key_down do |e|
       case e.key
-      when LEFT_KEY, "a"
+      when KEY[:left], "a"
         @inputs.push(Left.new(self))
-      when UP_KEY, "w"
+      when KEY[:up], "w"
         @inputs.push(Up.new(self))
-      when RIGHT_KEY, "d"
+      when KEY[:right], "d"
         @inputs.push(Right.new(self))
-      when DOWN_KEY, "s"
+      when KEY[:down], "s"
         @inputs.push(Down.new(self))
       when "escape"
         close
