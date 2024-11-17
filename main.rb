@@ -33,28 +33,28 @@ end
 module Input
   include Config
 
-  class Left < SimpleDelegator
+  class Left
     def handle_input
       dx = -1
       $map[$playery][$playerx + dx].move_horizontal(dx)
     end
   end
 
-  class Right < SimpleDelegator
+  class Right
     def handle_input
       dx = 1
       $map[$playery][$playerx + dx].move_horizontal(dx)
     end
   end
 
-  class Up < SimpleDelegator
+  class Up
     def handle_input
       dy = -1
       $map[$playery + dy][$playerx].move_vertical(dy)
     end
   end
 
-  class Down < SimpleDelegator
+  class Down
     def handle_input
       dy = 1
       $map[$playery + dy][$playerx].move_vertical(dy)
@@ -63,14 +63,14 @@ module Input
 end
 
 module FallingStates
-  class Falling < SimpleDelegator
+  class Falling
     def falling? = true
     def resting? = false
 
     def move_horizontal(dx) = nil
   end
 
-  class Resting < SimpleDelegator
+  class Resting
     def falling? = false
     def resting? = true
 
@@ -84,26 +84,25 @@ module FallingStates
   end
 end
 
-class FallStrategy < SimpleDelegator
-  def initialize(delegate, falling_state)
-    super(delegate)
-    $falling_state = falling_state
+class FallStrategy
+  def initialize(falling_state)
+    @falling_state = falling_state
   end
 
   def update(tile, x, y)
     if $map[y + 1][x].air?
       tile.drop
       $map[y + 1][x] = tile
-      $map[y][x] = Tiles::Air.new(tile)
+      $map[y][x] = Tiles::Air.new
     elsif falling?
       tile.rest
     end
   end
 
-  def falling? = $falling_state.falling?
+  def falling? = @falling_state.falling?
 end
 
-class Tile < SimpleDelegator
+class Tile
   include Config
 
   def update(x, y) = nil
@@ -162,18 +161,17 @@ module Tiles
   class Stone < Tile
     attr_reader :falling_state
 
-    def initialize(delegate, falling_state)
-      super(delegate)
-      $falling_state = falling_state
-      $fall_strategy = FallStrategy.new(self, $falling_state)
+    def initialize(falling_state)
+      @falling_state = falling_state
+      @fall_strategy = FallStrategy.new(falling_state)
     end
 
     def update(x, y)
-      $fall_strategy.update(self, x, y)
+      @fall_strategy.update(self, x, y)
     end
 
     def move_horizontal(dx)
-      $falling_state.move_horizontal(self, dx)
+      @falling_state.move_horizontal(dx)
     end
 
     def draw(g, x, y)
@@ -182,25 +180,24 @@ module Tiles
     end
 
     def falling? = $falling_state.falling?
-    def drop = $falling_state = FallingStates::Falling.new(self)
-    def rest = $falling_state = FallingStates::Resting.new(self)
+    def drop = $falling_state = FallingStates::Falling.new
+    def rest = $falling_state = FallingStates::Resting.new
   end
 
   class Box < Tile
     attr_reader :falling_state
 
-    def initialize(delegate, falling_state)
-      super(delegate)
-      $falling_state = falling_state
-      $fall_strategy = FallStrategy.new(self, $falling_state)
+    def initialize(falling_state)
+      @falling_state = falling_state
+      @fall_strategy = FallStrategy.new(@falling_state)
     end
 
     def update(x, y)
-      $fall_strategy.update(self, x, y)
+      @fall_strategy.update(self, x, y)
     end
 
     def move_horizontal(dx)
-      $falling_state.move_horizontal(self, dx)
+      @falling_state.move_horizontal(dx)
     end
 
     def draw(g, x, y)
@@ -209,8 +206,8 @@ module Tiles
     end
 
     def falling? = $falling_state.falling?
-    def drop = $falling_state = FallingStates::Falling.new(self)
-    def rest = $falling_state = FallingStates::Resting.new(self)
+    def drop = $falling_state = FallingStates::Falling.new
+    def rest = $falling_state = FallingStates::Resting.new
   end
 
   class Key1 < Tile
@@ -284,6 +281,33 @@ class GraphicsObject
   end
 end
 
+def remove_lock1
+  (0...$map.length).each do |y|
+    (0...$map[y].length).each do |x|
+      if $map[y][x].lock1?
+        $map[y][x] = Tiles::Air.new
+      end
+    end
+  end
+end
+
+def remove_lock2
+  (0...$map.length).each do |y|
+    (0...$map[y].length).each do |x|
+      if $map[y][x].lock2?
+        $map[y][x] = Tiles::Air.new
+      end
+    end
+  end
+end
+
+def move_to_tile(newx, newy)
+  $map[$playery][$playerx] = Tiles::Air.new
+  $map[newy][newx] = Tiles::Player.new
+  $playerx = newx
+  $playery = newy
+end
+
 class Main
   include Config
   include Input
@@ -313,13 +337,13 @@ class Main
     Window.on :key_down do |e|
       case e.key
       when KEY[:left], "a"
-        $inputs.push(Left.new(self))
+        $inputs.push(Left.new)
       when KEY[:up], "w"
-        $inputs.push(Up.new(self))
+        $inputs.push(Up.new)
       when KEY[:right], "d"
-        $inputs.push(Right.new(self))
+        $inputs.push(Right.new)
       when KEY[:down], "s"
-        $inputs.push(Down.new(self))
+        $inputs.push(Down.new)
       when KEY[:escape]
         Window.close
       end
@@ -359,46 +383,19 @@ class Main
 
   def transform_tile(tile)
     case tile
-    when TILE[:air] then Air.new(self)
-    when TILE[:flux] then Flux.new(self)
-    when TILE[:unbreakable] then Unbreakable.new(self)
-    when TILE[:player] then Player.new(self)
-    when TILE[:stone] then Stone.new(self, FallingStates::Resting.new(self))
-    when TILE[:falling_stone] then Stone.new(self, FallingStates::Falling.new(self))
-    when TILE[:box] then Box.new(self, FallingStates::Resting.new(self))
-    when TILE[:falling_box] then Box.new(self, FallingStates::Falling.new(self))
-    when TILE[:key1] then Key1.new(self)
-    when TILE[:lock1] then Lock1.new(self)
-    when TILE[:key2] then Key2.new(self)
-    when TILE[:lock2] then Lock2.new(self)
+    when TILE[:air] then Air.new
+    when TILE[:flux] then Flux.new
+    when TILE[:unbreakable] then Unbreakable.new
+    when TILE[:player] then Player.new
+    when TILE[:stone] then Stone.new(FallingStates::Resting.new)
+    when TILE[:falling_stone] then Stone.new(FallingStates::Falling.new)
+    when TILE[:box] then Box.new(FallingStates::Resting.new)
+    when TILE[:falling_box] then Box.new(FallingStates::Falling.new)
+    when TILE[:key1] then Key1.new
+    when TILE[:lock1] then Lock1.new
+    when TILE[:key2] then Key2.new
+    when TILE[:lock2] then Lock2.new
     end
-  end
-
-  def remove_lock1
-    (0...$map.length).each do |y|
-      (0...$map[y].length).each do |x|
-        if $map[y][x].lock1?
-          $map[y][x] = Air.new(self)
-        end
-      end
-    end
-  end
-
-  def remove_lock2
-    (0...$map.length).each do |y|
-      (0...$map[y].length).each do |x|
-        if $map[y][x].lock2?
-          $map[y][x] = Air.new(self)
-        end
-      end
-    end
-  end
-
-  def move_to_tile(newx, newy)
-    $map[$playery][$playerx] = Air.new(self)
-    $map[newy][newx] = Player.new(self)
-    $playerx = newx
-    $playery = newy
   end
 
   def update_game
