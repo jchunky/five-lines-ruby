@@ -55,15 +55,21 @@ class FallStrategy
     @falling_state = falling_state
   end
 
+  def falling? = @falling_state.falling?
+
   def update(tile, x, y)
     @falling_state = $map[y + 1][x].air? ? FallingStates::Falling.new : FallingStates::Resting.new
+    drop(tile, x, y)
+  end
+
+  private
+
+  def drop(tile, x, y)
     if @falling_state.falling?
       $map[y + 1][x] = tile
       $map[y][x] = Tiles::Air.new
     end
   end
-
-  def falling? = @falling_state.falling?
 end
 
 module FallingStates
