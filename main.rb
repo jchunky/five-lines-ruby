@@ -26,6 +26,7 @@ module Config
     up: "up",
     right: "right",
     down: "down",
+    escape: "escape",
   }
 end
 
@@ -321,8 +322,8 @@ class Main
         @inputs.push(Right.new(self))
       when KEY[:down], "s"
         @inputs.push(Down.new(self))
-      when "escape"
-        close
+      when KEY[:escape]
+        Window.close
       end
     end
 
