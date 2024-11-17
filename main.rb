@@ -82,6 +82,18 @@ module FallingStates
   end
 end
 
+class FallStrategy < SimpleDelegator
+  def update(x, y)
+    if map[y + 1][x].air?
+      map[y][x].drop
+      map[y + 1][x] = map[y][x]
+      map[y][x] = Tiles::Air.new(map[y][x])
+    elsif falling_state.falling?
+      map[y + 1][x].rest
+    end
+  end
+end
+
 module Tiles
   include Config
 
@@ -235,19 +247,16 @@ module Tiles
 
   class Stone < SimpleDelegator
     include Config
+    attr_reader :falling_state
+
     def initialize(delegate, falling_state)
       super(delegate)
       @falling_state = falling_state
+      @fall_strategy = FallStrategy.new(self)
     end
 
     def update(x, y)
-      if map[y + 1][x].air?
-        drop
-        map[y + 1][x] = self
-        map[y][x] = Air.new(self)
-      elsif @falling_state.falling?
-        rest
-      end
+      @fall_strategy.update(x, y)
     end
 
     def move_vertical(dy)
@@ -285,19 +294,16 @@ module Tiles
 
   class Box < SimpleDelegator
     include Config
+    attr_reader :falling_state
+
     def initialize(delegate, falling_state)
       super(delegate)
       @falling_state = falling_state
+      @fall_strategy = FallStrategy.new(self)
     end
 
     def update(x, y)
-      if map[y + 1][x].air?
-        drop
-        map[y + 1][x] = self
-        map[y][x] = Air.new(self)
-      elsif @falling_state.falling?
-        rest
-      end
+      @fall_strategy.update(x, y)
     end
 
     def move_vertical(dy)
