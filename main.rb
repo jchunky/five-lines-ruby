@@ -185,12 +185,12 @@ module Tiles
 
   class Key1 < Tile
     def move_vertical(dy)
-      remove_lock1
+      remove_lock(RemoveLock1.new)
       move_to_tile($playerx, $playery + dy)
     end
 
     def move_horizontal(dx)
-      remove_lock1
+      remove_lock(RemoveLock1.new)
       move_to_tile($playerx + dx, $playery)
     end
 
@@ -211,12 +211,12 @@ module Tiles
 
   class Key2 < Tile
     def move_vertical(dy)
-      remove_lock2
+      remove_lock(RemoveLock2.new)
       move_to_tile($playerx, $playery + dy)
     end
 
     def move_horizontal(dx)
-      remove_lock2
+      remove_lock(RemoveLock2.new)
       move_to_tile($playerx + dx, $playery)
     end
 
@@ -394,23 +394,25 @@ class Main
   end
 end
 
-def remove_lock1
+def remove_lock(should_remove)
   (0...$map.length).each do |y|
     (0...$map[y].length).each do |x|
-      if $map[y][x].lock1?
+      if should_remove.check?($map[y][x])
         $map[y][x] = Tiles::Air.new
       end
     end
   end
 end
 
-def remove_lock2
-  (0...$map.length).each do |y|
-    (0...$map[y].length).each do |x|
-      if $map[y][x].lock2?
-        $map[y][x] = Tiles::Air.new
-      end
-    end
+class RemoveLock1
+  def check?(tile)
+    tile.lock1?
+  end
+end
+
+class RemoveLock2
+  def check?(tile)
+    tile.lock2?
   end
 end
 
