@@ -48,6 +48,26 @@ module Input
   end
 end
 
+class FallStrategy
+  attr_accessor :falling_state
+
+  def initialize(falling_state)
+    @falling_state = falling_state
+  end
+
+  def update(tile, x, y)
+    if $map[y + 1][x].air?
+      @falling_state = FallingStates::Falling.new
+      $map[y + 1][x] = tile
+      $map[y][x] = Tiles::Air.new
+    elsif falling?
+      @falling_state = FallingStates::Resting.new
+    end
+  end
+
+  def falling? = @falling_state.falling?
+end
+
 module FallingStates
   class Falling
     def falling? = true
@@ -70,24 +90,6 @@ module FallingStates
   end
 end
 
-class FallStrategy
-  def initialize(falling_state)
-    @falling_state = falling_state
-  end
-
-  def update(tile, x, y)
-    if $map[y + 1][x].air?
-      tile.drop
-      $map[y + 1][x] = tile
-      $map[y][x] = Tiles::Air.new
-    elsif falling?
-      tile.rest
-    end
-  end
-
-  def falling? = @falling_state.falling?
-end
-
 class Tile
   include Config
 
@@ -95,10 +97,7 @@ class Tile
   def move_vertical(dy) = nil
   def move_horizontal(dx) = nil
   def draw(g, x, y) = nil
-  def drop = nil
-  def rest = nil
 
-  def falling? = false
   def air? = false
   def lock1? = false
   def lock2? = false
@@ -143,10 +142,7 @@ module Tiles
   end
 
   class Stone < Tile
-    attr_reader :falling_state
-
     def initialize(falling_state)
-      @falling_state = falling_state
       @fall_strategy = FallStrategy.new(falling_state)
     end
 
@@ -155,25 +151,18 @@ module Tiles
     end
 
     def move_horizontal(dx)
-      @falling_state.move_horizontal(self, dx)
+      @fall_strategy.falling_state.move_horizontal(self, dx)
     end
 
     def draw(g, x, y)
       g.fill_style = "#0000cc"
       g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
     end
-
-    def falling? = $falling_state.falling?
-    def drop = $falling_state = FallingStates::Falling.new
-    def rest = $falling_state = FallingStates::Resting.new
   end
 
   class Box < Tile
-    attr_reader :falling_state
-
     def initialize(falling_state)
-      @falling_state = falling_state
-      @fall_strategy = FallStrategy.new(@falling_state)
+      @fall_strategy = FallStrategy.new(falling_state)
     end
 
     def update(x, y)
@@ -181,17 +170,13 @@ module Tiles
     end
 
     def move_horizontal(dx)
-      @falling_state.move_horizontal(self, dx)
+      @fall_strategy.falling_state.move_horizontal(self, dx)
     end
 
     def draw(g, x, y)
       g.fill_style = "#8b4513"
       g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
     end
-
-    def falling? = $falling_state.falling?
-    def drop = $falling_state = FallingStates::Falling.new
-    def rest = $falling_state = FallingStates::Resting.new
   end
 
   class Key1 < Tile
