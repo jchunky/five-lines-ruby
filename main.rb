@@ -101,6 +101,9 @@ module Tiles
     def draw(g, x, y)
     end
 
+    def falling? = false
+    def drop = nil
+    def rest = nil
     def stony? = false
     def boxy? = false
     def edible? = true
@@ -137,6 +140,9 @@ module Tiles
       g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
     end
 
+    def falling? = false
+    def drop = nil
+    def rest = nil
     def stony? = false
     def boxy? = false
     def edible? = true
@@ -171,6 +177,9 @@ module Tiles
       g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
     end
 
+    def falling? = false
+    def drop = nil
+    def rest = nil
     def stony? = false
     def boxy? = false
     def edible? = false
@@ -203,6 +212,9 @@ module Tiles
     def draw(g, x, y)
     end
 
+    def falling? = false
+    def drop = nil
+    def rest = nil
     def stony? = false
     def boxy? = false
     def edible? = false
@@ -230,10 +242,11 @@ module Tiles
 
     def update(x, y)
       if map[y + 1][x].air?
-        map[y + 1][x] = Stone.new(self, FallingStates::Falling.new(self))
+        map[y][x].drop
+        map[y + 1][x] = map[y][x]
         map[y][x] = Air.new(self)
       elsif @falling_state.falling?
-        map[y][x] = Stone.new(self, FallingStates::Resting.new(self))
+        map[y][x].rest
       end
     end
 
@@ -249,6 +262,9 @@ module Tiles
       g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
     end
 
+    def falling? = @falling_state.falling?
+    def drop = @falling_state = FallingStates::Falling.new(self)
+    def rest = @falling_state = FallingStates::Resting.new(self)
     def stony? = true
     def boxy? = false
     def edible? = false
@@ -276,10 +292,11 @@ module Tiles
 
     def update(x, y)
       if map[y + 1][x].air?
-        map[y + 1][x] = Box.new(self, FallingStates::Falling.new(self))
+        map[y][x].drop
+        map[y + 1][x] = map[y][x]
         map[y][x] = Air.new(self)
       elsif @falling_state.falling?
-        map[y][x] = Box.new(self, FallingStates::Resting.new(self))
+        map[y][x].rest
       end
     end
 
@@ -295,6 +312,9 @@ module Tiles
       g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
     end
 
+    def falling? = @falling_state.falling?
+    def drop = @falling_state = FallingStates::Falling.new(self)
+    def rest = @falling_state = FallingStates::Resting.new(self)
     def stony? = false
     def boxy? = true
     def edible? = false
@@ -333,6 +353,9 @@ module Tiles
       g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
     end
 
+    def falling? = false
+    def drop = nil
+    def rest = nil
     def stony? = false
     def boxy? = false
     def edible? = false
@@ -367,6 +390,9 @@ module Tiles
       g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
     end
 
+    def falling? = false
+    def drop = nil
+    def rest = nil
     def stony? = false
     def boxy? = false
     def edible? = false
@@ -405,6 +431,9 @@ module Tiles
       g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
     end
 
+    def falling? = false
+    def drop = nil
+    def rest = nil
     def stony? = false
     def boxy? = false
     def edible? = false
@@ -439,6 +468,9 @@ module Tiles
       g.fill_rect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
     end
 
+    def falling? = false
+    def drop = nil
+    def rest = nil
     def stony? = false
     def boxy? = false
     def edible? = false
